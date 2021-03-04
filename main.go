@@ -24,10 +24,19 @@ func faq (w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "<ul><li>...</li><li>...</li></ul>")
 }
 
+func err404 (w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotFound)
+	fmt.Fprint(w, "<h1>We could not find the page you "+
+		"were looking for :(</h1>"+
+		"<p>Please <a href=\"mailto:support@gogal.io\">email</a> us if you keep being sent to an "+
+		"invalid page.</p>")
+}
+
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", home)
 	r.HandleFunc("/contact", contact)
 	r.HandleFunc("/faq", faq)
+	r.NotFoundHandler = http.HandlerFunc(err404)
 	http.ListenAndServe(":3000", r)
 }
