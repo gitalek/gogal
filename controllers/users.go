@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/gitalek/gogal/views"
 	"net/http"
 )
@@ -26,5 +27,15 @@ func (u *Users) New(w http.ResponseWriter, r *http.Request) {
 
 // Create processes the POST /signup route
 func (u *Users) Create(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("This is a temporary response."))
+	if err := r.ParseForm(); err != nil {
+		panic(err)
+	}
+	fmt.Fprintln(w, r.PostForm["email"])
+	fmt.Fprintln(w, r.PostForm["password"])
+	fmt.Fprintln(w, r.PostForm["fake"])
+}
+
+type SignupForm struct {
+	Email    string `schema:"email"`
+	Password string `schema:"password"`
 }
