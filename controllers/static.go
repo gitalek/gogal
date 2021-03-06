@@ -7,17 +7,17 @@ func NewStatic() (*Static, error) {
 	if err != nil {
 		return nil, err
 	}
-	contactView, err := views.NewView("bootsrap", "views/static/contact.gohtml")
+	contactView, err := views.NewView("bootstrap", "views/static/contact.gohtml")
 	if err != nil {
 		return nil, err
 	}
 	return &Static{
-		HomeView:    homeView,
-		ContactView: contactView,
+		Home:    homeView,
+		Contact: contactView,
 	}, nil
 }
 
 type Static struct {
-	HomeView    *views.View
-	ContactView *views.View
+	Home    *views.View
+	Contact *views.View
 }
