@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/gitalek/gogal/controllers"
 	"github.com/gitalek/gogal/views"
 	"github.com/gorilla/mux"
 	"log"
@@ -12,7 +13,6 @@ var (
 	homeView    *views.View
 	contactView *views.View
 	faqView     *views.View
-	signupView  *views.View
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -28,11 +28,6 @@ func contact(w http.ResponseWriter, r *http.Request) {
 func faq(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	must(faqView.Render(w, nil))
-}
-
-func signup(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	must(signupView.Render(w, nil))
 }
 
 func err404(w http.ResponseWriter, r *http.Request) {
@@ -58,13 +53,13 @@ func main() {
 	must(err)
 	faqView, err = views.NewView("bootstrap", "views/faq.gohtml")
 	must(err)
-	signupView, err = views.NewView("bootstrap", "views/signup.gohtml")
+	usersC, err := controllers.NewUsers()
 	must(err)
 	r := mux.NewRouter()
 	r.HandleFunc("/", home)
 	r.HandleFunc("/contact", contact)
 	r.HandleFunc("/faq", faq)
-	r.HandleFunc("/signup", signup)
+	r.HandleFunc("/signup", usersC.New)
 	r.NotFoundHandler = http.HandlerFunc(err404)
 	log.Fatal(http.ListenAndServe(":3000", r))
 }
