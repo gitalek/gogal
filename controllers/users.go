@@ -3,7 +3,6 @@ package controllers
 import (
 	"fmt"
 	"github.com/gitalek/gogal/views"
-	"github.com/gorilla/schema"
 	"net/http"
 )
 
@@ -28,16 +27,11 @@ func (u *Users) New(w http.ResponseWriter, r *http.Request) {
 
 // Create processes the POST /signup route
 func (u *Users) Create(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		panic(err)
-	}
-
-	dec := schema.NewDecoder()
 	var form SignupForm
-	if err := dec.Decode(&form, r.PostForm); err != nil {
+	if err := parseForm(r, &form); err != nil {
 		panic(err)
 	}
-	fmt.Fprintln(w, form)
+	fmt.Fprintf(w, "Email is %s\nPassword is %s\n", form.Email, form.Password)
 }
 
 type SignupForm struct {
