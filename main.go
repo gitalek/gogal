@@ -12,7 +12,7 @@ var contactView *views.View
 
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	err := homeView.Template.Execute(w, nil)
+	err := homeView.Template.ExecuteTemplate(w, homeView.Layout, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -20,7 +20,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	err := contactView.Template.Execute(w, nil)
+	err := contactView.Template.ExecuteTemplate(w, contactView.Layout, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -42,11 +42,11 @@ func err404(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	var err error
-	homeView, err = views.NewView("views/home.gohtml")
+	homeView, err = views.NewView("bootstrap", "views/home.gohtml")
 	if err != nil {
 		panic(err)
 	}
-	contactView, err = views.NewView("views/contact.gohtml")
+	contactView, err = views.NewView("bootstrap", "views/contact.gohtml")
 	if err != nil {
 		panic(err)
 	}
