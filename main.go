@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gitalek/gogal/views"
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 )
 
@@ -12,18 +13,12 @@ var contactView *views.View
 
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	err := homeView.Template.ExecuteTemplate(w, homeView.Layout, nil)
-	if err != nil {
-		panic(err)
-	}
+	must(homeView.Render(w, nil))
 }
 
 func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	err := contactView.Template.ExecuteTemplate(w, contactView.Layout, nil)
-	if err != nil {
-		panic(err)
-	}
+	must(contactView.Render(w, nil))
 }
 
 func faq(w http.ResponseWriter, r *http.Request) {
@@ -40,20 +35,23 @@ func err404(w http.ResponseWriter, r *http.Request) {
 		"invalid page.</p>")
 }
 
+// must helper panics on any error
+func must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
 func main() {
 	var err error
 	homeView, err = views.NewView("bootstrap", "views/home.gohtml")
-	if err != nil {
-		panic(err)
-	}
+	must(err)
 	contactView, err = views.NewView("bootstrap", "views/contact.gohtml")
-	if err != nil {
-		panic(err)
-	}
+	must(err)
 	r := mux.NewRouter()
 	r.HandleFunc("/", home)
 	r.HandleFunc("/contact", contact)
 	r.HandleFunc("/faq", faq)
 	r.NotFoundHandler = http.HandlerFunc(err404)
-	http.ListenAndServe(":3000", r)
+	log.Fatal(http.ListenAndServe(":3000", r))
 }
