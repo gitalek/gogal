@@ -11,7 +11,7 @@ type Users struct {
 }
 
 func NewUsers() (*Users, error) {
-	v, err := views.NewView("bootstrap", "views/users/new.gohtml")
+	v, err := views.NewView("bootstrap", "users/new")
 	if err != nil {
 		return nil, err
 	}

@@ -3,11 +3,11 @@ package controllers
 import "github.com/gitalek/gogal/views"
 
 func NewStatic() (*Static, error) {
-	homeView, err := views.NewView("bootstrap", "views/static/home.gohtml")
+	homeView, err := views.NewView("bootstrap", "static/home")
 	if err != nil {
 		return nil, err
 	}
-	contactView, err := views.NewView("bootstrap", "views/static/contact.gohtml")
+	contactView, err := views.NewView("bootstrap", "static/contact")
 	if err != nil {
 		return nil, err
 	}
