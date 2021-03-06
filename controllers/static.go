@@ -11,13 +11,19 @@ func NewStatic() (*Static, error) {
 	if err != nil {
 		return nil, err
 	}
+	faqView, err := views.NewView("bootstrap", "static/faq")
+	if err != nil {
+		return nil, err
+	}
 	return &Static{
 		Home:    homeView,
 		Contact: contactView,
+		FAQ:     faqView,
 	}, nil
 }
 
 type Static struct {
 	Home    *views.View
 	Contact *views.View
+	FAQ     *views.View
 }
