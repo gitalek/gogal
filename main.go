@@ -10,7 +10,7 @@ import (
 var homeTemplate *template.Template
 var contactTemplate *template.Template
 
-func home (w http.ResponseWriter, r *http.Request) {
+func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	err := homeTemplate.Execute(w, nil)
 	if err != nil {
@@ -18,7 +18,7 @@ func home (w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func contact (w http.ResponseWriter, r *http.Request) {
+func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	err := contactTemplate.Execute(w, nil)
 	if err != nil {
@@ -26,13 +26,13 @@ func contact (w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func faq (w http.ResponseWriter, r *http.Request) {
+func faq(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	fmt.Fprint(w, "<h1>FAQ</h1>")
 	fmt.Fprint(w, "<ul><li>...</li><li>...</li></ul>")
 }
 
-func err404 (w http.ResponseWriter, r *http.Request) {
+func err404(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
 	fmt.Fprint(w, "<h1>We could not find the page you "+
 		"were looking for :(</h1>"+
@@ -42,11 +42,17 @@ func err404 (w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	var err error
-	homeTemplate, err = template.ParseFiles("views/home.gohtml")
+	homeTemplate, err = template.ParseFiles(
+		"views/home.gohtml",
+		"views/layouts/footer.gohtml",
+	)
 	if err != nil {
 		panic(err)
 	}
-	contactTemplate, err = template.ParseFiles("views/contact.gohtml")
+	contactTemplate, err = template.ParseFiles(
+		"views/contact.gohtml",
+		"views/layouts/footer.gohtml",
+	)
 	if err != nil {
 		panic(err)
 	}
