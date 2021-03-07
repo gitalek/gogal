@@ -1,0 +1,14 @@
+---
+version: '3'
+services:
+  pgdb:
+    image: "postgres-custom"
+    container_name: "gogal_dev"
+    environment:
+      - POSTGRES_USER=gogal_dev
+      - POSTGRES_DB=gogal_dev
+    ports:
+      - "54321:5432"
+    env_file: .env
+    volumes:
+      - "${HOST_POSTGRES_DATA_PATH}:/var/lib/postgresql/data"
