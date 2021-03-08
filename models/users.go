@@ -12,7 +12,10 @@ var (
 	ErrNotFound = errors.New("models: resource not found")
 	// ErrInvalidID is returned when an invalid ID is provided to a method like Delete.
 	ErrInvalidID = errors.New("models: ID provided was invalid")
-	// userPwPepper is used for peppering passwords
+	// ErrInvalidPassword is reterned when an invalid password is used when attempting
+	// to authenticate a user.
+	ErrInvalidPassword = errors.New("models: incorrect password provided")
+	// userPwPepper is used for peppering passwords.
 	userPwPepper = "secret-random-string"
 )
 
