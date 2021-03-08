@@ -7,8 +7,10 @@ import (
 )
 
 var (
-	// ErrNotFound is returned when a resource cannot be found in the database
+	// ErrNotFound is returned when a resource cannot be found in the database.
 	ErrNotFound = errors.New("models: resource not found")
+	// ErrInvalidID is returned when an invalid ID is provided to a method like Delete.
+	ErrInvalidID = errors.New("models: ID provided was invalid")
 )
 
 type User struct {
