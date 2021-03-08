@@ -2,20 +2,22 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/gitalek/gogal/models"
 	"github.com/gitalek/gogal/views"
 	"net/http"
 )
 
 type Users struct {
 	NewView *views.View
+	us      *models.UserService
 }
 
-func NewUsers() (*Users, error) {
+func NewUsers(us *models.UserService) (*Users, error) {
 	v, err := views.NewView("bootstrap", "users/new")
 	if err != nil {
 		return nil, err
 	}
-	return &Users{NewView: v}, nil
+	return &Users{NewView: v, us: us}, nil
 }
 
 // New processes the GET /new route
