@@ -53,6 +53,7 @@ func main() {
 	r.Handle("/faq", staticC.FAQ).Methods("GET")
 	r.HandleFunc("/signup", usersC.New).Methods("GET")
 	r.HandleFunc("/signup", usersC.Create).Methods("POST")
+	r.HandleFunc("/login", usersC.Login).Methods("GET")
 	r.NotFoundHandler = http.HandlerFunc(err404)
 	log.Fatal(http.ListenAndServe(":3000", r))
 }
