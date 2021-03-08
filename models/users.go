@@ -12,6 +12,8 @@ var (
 	ErrNotFound = errors.New("models: resource not found")
 	// ErrInvalidID is returned when an invalid ID is provided to a method like Delete.
 	ErrInvalidID = errors.New("models: ID provided was invalid")
+	// userPwPepper is used for peppering passwords
+	userPwPepper = "secret-random-string"
 )
 
 type User struct {
