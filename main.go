@@ -3,9 +3,18 @@ package main
 import (
 	"fmt"
 	"github.com/gitalek/gogal/controllers"
+	"github.com/gitalek/gogal/models"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+)
+
+const (
+	host     = "localhost"
+	port     = 54321
+	user     = "gogal"
+	password = "lalala"
+	dbname   = "gogal_dev"
 )
 
 func err404(w http.ResponseWriter, r *http.Request) {
@@ -24,7 +33,16 @@ func must(err error) {
 }
 
 func main() {
-	var err error
+	connStr := fmt.Sprintf(
+		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname,
+	)
+	us, err := models.NewUserService(connStr)
+	if err != nil {
+		panic(err)
+	}
+	defer us.Close()
+	us.AutoMigrate()
 	staticC, err := controllers.NewStatic()
 	must(err)
 	usersC, err := controllers.NewUsers()
