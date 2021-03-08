@@ -19,6 +19,11 @@ type SignupForm struct {
 	Password string `schema:"password"`
 }
 
+type LoginForm struct {
+	Email    string `schema:"email"`
+	Password string `schema:"password"`
+}
+
 func NewUsers(us *models.UserService) (*Users, error) {
 	viewNew, err := views.NewView("bootstrap", "users/new")
 	if err != nil {
@@ -54,4 +59,12 @@ func (u *Users) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintf(w, "User is %v\n", user)
+}
+
+// Login processes the POST /login route
+func (u *Users) Login(w http.ResponseWriter, r *http.Request) {
+	var form LoginForm
+	if err := parseForm(r, &form); err != nil {
+		panic(err)
+	}
 }
