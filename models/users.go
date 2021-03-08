@@ -68,6 +68,10 @@ func (us *UserService) ByEmail(email string) (*User, error) {
 	return &user, nil
 }
 
+func (us *UserService) Update(user *User) error {
+	return us.db.Save(user).Error
+}
+
 func first(db *gorm.DB, dst interface{}) error {
 	err := db.First(dst).Error
 	if err == gorm.ErrRecordNotFound {
