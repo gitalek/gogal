@@ -74,6 +74,14 @@ func (us *UserService) Update(user *User) error {
 	return us.db.Save(user).Error
 }
 
+func (us *UserService) Delete(id uint) error {
+	if id == 0 {
+		return ErrInvalidID
+	}
+	user := User{Model: gorm.Model{ID: id}}
+	return us.db.Delete(&user).Error
+}
+
 func first(db *gorm.DB, dst interface{}) error {
 	err := db.First(dst).Error
 	if err == gorm.ErrRecordNotFound {
