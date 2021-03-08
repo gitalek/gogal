@@ -33,11 +33,15 @@ func (u *Users) Create(w http.ResponseWriter, r *http.Request) {
 	if err := parseForm(r, &form); err != nil {
 		panic(err)
 	}
-	fmt.Fprintf(
-		w,
-		"Name is %s\nEmail is %s\nPassword is %s\n",
-		form.Name, form.Email, form.Password,
-	)
+	user := models.User{
+		Name: form.Name,
+		Email: form.Email,
+	}
+	if err := u.us.Create(&user); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	fmt.Fprintf( w, "User is %v\n", user)
 }
 
 type SignupForm struct {
