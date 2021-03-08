@@ -31,10 +31,15 @@ func (u *Users) Create(w http.ResponseWriter, r *http.Request) {
 	if err := parseForm(r, &form); err != nil {
 		panic(err)
 	}
-	fmt.Fprintf(w, "Email is %s\nPassword is %s\n", form.Email, form.Password)
+	fmt.Fprintf(
+		w,
+		"Name is %s\nEmail is %s\nPassword is %s\n",
+		form.Name, form.Email, form.Password,
+	)
 }
 
 type SignupForm struct {
+	Name     string `schema:"name"`
 	Email    string `schema:"email"`
 	Password string `schema:"password"`
 }
