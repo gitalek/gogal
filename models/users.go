@@ -42,6 +42,10 @@ func (us *UserService) DestructiveReset() {
 	us.db.AutoMigrate(&User{})
 }
 
+func (us *UserService) Create(user *User) error {
+	return us.db.Create(user).Error
+}
+
 // As a general rule, any error but ErrNotFound should
 // probably result in a 500 error.
 func (us *UserService) ByID(id uint) (*User, error) {
