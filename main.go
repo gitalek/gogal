@@ -45,7 +45,7 @@ func main() {
 	us.AutoMigrate()
 	staticC, err := controllers.NewStatic()
 	must(err)
-	usersC, err := controllers.NewUsers()
+	usersC, err := controllers.NewUsers(us)
 	must(err)
 	r := mux.NewRouter()
 	r.Handle("/", staticC.Home)
