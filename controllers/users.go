@@ -8,16 +8,27 @@ import (
 )
 
 type Users struct {
-	NewView *views.View
-	us      *models.UserService
+	NewView   *views.View
+	LoginView *views.View
+	us        *models.UserService
+}
+
+type SignupForm struct {
+	Name     string `schema:"name"`
+	Email    string `schema:"email"`
+	Password string `schema:"password"`
 }
 
 func NewUsers(us *models.UserService) (*Users, error) {
-	v, err := views.NewView("bootstrap", "users/new")
+	viewNew, err := views.NewView("bootstrap", "users/new")
 	if err != nil {
 		return nil, err
 	}
-	return &Users{NewView: v, us: us}, nil
+	viewLogin, err := views.NewView("bootstrap", "users/login")
+	if err != nil {
+		return nil, err
+	}
+	return &Users{NewView: viewNew, LoginView: viewLogin, us: us}, nil
 }
 
 // New processes the GET /new route
@@ -43,10 +54,4 @@ func (u *Users) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintf(w, "User is %v\n", user)
-}
-
-type SignupForm struct {
-	Name     string `schema:"name"`
-	Email    string `schema:"email"`
-	Password string `schema:"password"`
 }
