@@ -2,6 +2,8 @@ package models
 
 import (
 	"errors"
+	"github.com/gitalek/gogal/hash"
+	"github.com/gitalek/gogal/rand"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"golang.org/x/crypto/bcrypt"
@@ -17,6 +19,8 @@ var (
 	ErrInvalidPassword = errors.New("models: incorrect password provided")
 	// userPwPepper is used for peppering passwords.
 	userPwPepper = "secret-random-string"
+	// hmacSecretKey is used for hashing remember tokens.
+	hmacSecretKey = "secret-hmac-key"
 )
 
 type User struct {
@@ -30,7 +34,8 @@ type User struct {
 }
 
 type UserService struct {
-	db *gorm.DB
+	db   *gorm.DB
+	hmac hash.HMAC
 }
 
 func NewUserService(connStr string) (*UserService, error) {
@@ -39,7 +44,8 @@ func NewUserService(connStr string) (*UserService, error) {
 		return nil, err
 	}
 	db.LogMode(true)
-	return &UserService{db: db}, nil
+	hmac := hash.NewHMAC(hmacSecretKey)
+	return &UserService{db: db, hmac: hmac}, nil
 }
 
 // Close method closes the UserService database connection.
@@ -103,6 +109,16 @@ func (us *UserService) Create(user *User) error {
 	}
 	user.PasswordHash = string(hashedBytes)
 	user.Password = ""
+
+	if user.Remember == "" {
+		token, err := rand.RememberToken()
+		if err != nil {
+			return err
+		}
+		user.Remember = token
+	}
+	user.RememberHash = us.hmac.Hash(user.Remember)
+
 	return us.db.Create(user).Error
 }
 
@@ -129,6 +145,9 @@ func (us *UserService) ByEmail(email string) (*User, error) {
 }
 
 func (us *UserService) Update(user *User) error {
+	if user.Remember != "" {
+		user.RememberHash = us.hmac.Hash(user.Remember)
+	}
 	return us.db.Save(user).Error
 }
 
