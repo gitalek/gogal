@@ -122,6 +122,21 @@ func (us *UserService) Create(user *User) error {
 	return us.db.Create(user).Error
 }
 
+func (us *UserService) Update(user *User) error {
+	if user.Remember != "" {
+		user.RememberHash = us.hmac.Hash(user.Remember)
+	}
+	return us.db.Save(user).Error
+}
+
+func (us *UserService) Delete(id uint) error {
+	if id == 0 {
+		return ErrInvalidID
+	}
+	user := User{Model: gorm.Model{ID: id}}
+	return us.db.Delete(&user).Error
+}
+
 // As a general rule, any error but ErrNotFound should
 // probably result in a 500 error.
 func (us *UserService) ByID(id uint) (*User, error) {
@@ -144,19 +159,14 @@ func (us *UserService) ByEmail(email string) (*User, error) {
 	return &user, nil
 }
 
-func (us *UserService) Update(user *User) error {
-	if user.Remember != "" {
-		user.RememberHash = us.hmac.Hash(user.Remember)
+func (us *UserService) ByRemember(token string) (*User, error) {
+	var user User
+	rememberHash := us.hmac.Hash(token)
+	err := first(us.db.Where("remember_hash = ?", rememberHash), &user)
+	if err != nil {
+		return nil, err
 	}
-	return us.db.Save(user).Error
-}
-
-func (us *UserService) Delete(id uint) error {
-	if id == 0 {
-		return ErrInvalidID
-	}
-	user := User{Model: gorm.Model{ID: id}}
-	return us.db.Delete(&user).Error
+	return &user, nil
 }
 
 func first(db *gorm.DB, dst interface{}) error {
