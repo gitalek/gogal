@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"github.com/gitalek/gogal/models"
+	"github.com/gitalek/gogal/rand"
 	"github.com/gitalek/gogal/views"
 	"net/http"
 )
@@ -85,4 +86,24 @@ func (u *Users) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	http.SetCookie(w, &cookie)
 	fmt.Fprintln(w, user)
+}
+
+func (u *Users) signIn(w http.ResponseWriter, user *models.User) error {
+	if user.Remember == "" {
+		token, err := rand.RememberToken()
+		if err != nil {
+			return err
+		}
+		user.Remember = token
+		err = u.us.Update(user)
+		if err != nil {
+			return err
+		}
+	}
+	cookie := http.Cookie{
+		Name: "remember_token",
+		Value: user.Remember,
+	}
+	http.SetCookie(w, &cookie)
+	return nil
 }
