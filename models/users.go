@@ -14,10 +14,12 @@ var (
 	// ErrInvalidPassword is reterned when an invalid password is used when attempting
 	// to authenticate a user.
 	ErrInvalidPassword = errors.New("models: incorrect password provided")
+	// ErrEmailRequired is returned when an email address is not provided when creating a user.
+	ErrEmailRequired = errors.New("models: email address is required")
+	// ErrEmailInvalid is returned when an email address doesn't match regexp.
+	ErrEmailInvalid = errors.New("models: email address is not valid")
 	// userPwPepper is used for peppering passwords.
 	userPwPepper = "secret-random-string"
-	// ErrEmailRequired is returned when an email address is not provided when creating a user
-	ErrEmailRequired = errors.New("models: email address is required")
 	// hmacSecretKey is used for hashing remember tokens.
 	hmacSecretKey = "secret-hmac-key"
 )
