@@ -38,3 +38,17 @@ func (uv *userValidator) Create(user *User) error {
 
 	return uv.UserDB.Create(user)
 }
+
+func (uv *userValidator) Update(user *User) error {
+	if user.Remember != "" {
+		user.RememberHash = uv.hmac.Hash(user.Remember)
+	}
+	return uv.Update(user)
+}
+
+func (uv *userValidator) Delete(id uint) error {
+	if id == 0 {
+		return ErrInvalidID
+	}
+	return uv.Delete(id)
+}

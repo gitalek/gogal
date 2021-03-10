@@ -67,16 +67,10 @@ func (ug *userGorm) Create(user *User) error {
 }
 
 func (ug *userGorm) Update(user *User) error {
-	if user.Remember != "" {
-		user.RememberHash = ug.hmac.Hash(user.Remember)
-	}
 	return ug.db.Save(user).Error
 }
 
 func (ug *userGorm) Delete(id uint) error {
-	if id == 0 {
-		return ErrInvalidID
-	}
 	user := User{Model: gorm.Model{ID: id}}
 	return ug.db.Delete(&user).Error
 }
