@@ -69,7 +69,11 @@ func NewUserService(connStr string) (*UserService, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &UserService{UserDB: ug}, nil
+	return &UserService{
+		UserDB: userValidator{
+			UserDB: ug,
+		},
+	}, nil
 }
 
 func newUserGorm(connStr string) (*userGorm, error) {
@@ -80,6 +84,12 @@ func newUserGorm(connStr string) (*userGorm, error) {
 	db.LogMode(true)
 	hmac := hash.NewHMAC(hmacSecretKey)
 	return &userGorm{db: db, hmac: hmac}, nil
+}
+
+// userValidator is a validation layer that validates and normalizes
+// data before passing it on the next UserDB in our interface chain.
+type userValidator struct {
+	UserDB
 }
 
 // Close method closes the UserService database connection.
