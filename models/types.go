@@ -19,6 +19,11 @@ type UserDB interface {
 	DestructiveReset() error
 }
 
+type UserService interface {
+	UserDB
+	Authenticate(email, password string) (*User, error)
+}
+
 type User struct {
 	gorm.Model
 	Name         string
