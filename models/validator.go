@@ -4,6 +4,7 @@ import (
 	"github.com/gitalek/gogal/hash"
 	"github.com/gitalek/gogal/rand"
 	"golang.org/x/crypto/bcrypt"
+	"strings"
 )
 
 // userValidator is a validation layer that validates and normalizes
@@ -69,6 +70,20 @@ func (uv *userValidator) idGreaterThan(n uint) userValFn {
 	})
 }
 
+func (uv *userValidator) normalizeEmail(user *User) error {
+	user.Email = strings.ToLower(user.Email)
+	user.Email = strings.TrimSpace(user.Email)
+	return nil
+}
+
+func (uv *userValidator) ByEmail(email string) (*User, error) {
+	var user User
+	if err := runUserValFns(&user, uv.normalizeEmail); err != nil {
+		return nil, err
+	}
+	return uv.UserDB.ByEmail(user.Email)
+}
+
 func (uv *userValidator) ByRemember(token string) (*User, error) {
 	user := User{Remember: token}
 	if err := runUserValFns(&user, uv.hmacRemember); err != nil {
@@ -89,6 +104,7 @@ func (uv *userValidator) Create(user *User) error {
 		uv.bcryptPassword,
 		uv.setRememberIfUnset,
 		uv.hmacRemember,
+		uv.normalizeEmail,
 	}
 	if err := runUserValFns(user, validators...); err != nil {
 		return err
@@ -98,7 +114,12 @@ func (uv *userValidator) Create(user *User) error {
 }
 
 func (uv *userValidator) Update(user *User) error {
-	if err := runUserValFns(user, uv.bcryptPassword, uv.hmacRemember); err != nil {
+	validators := []userValFn{
+		uv.bcryptPassword,
+		uv.hmacRemember,
+		uv.normalizeEmail,
+	}
+	if err := runUserValFns(user, validators...); err != nil {
 		return err
 	}
 	return uv.UserDB.Update(user)
