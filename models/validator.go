@@ -59,6 +59,16 @@ func (uv *userValidator) setRememberIfUnset(user *User) error {
 	return nil
 }
 
+// idGreaterThan builds a validator
+func (uv *userValidator) idGreaterThan(n uint) userValFn {
+	return userValFn(func(user *User) error {
+		if user.ID <= n {
+			return ErrInvalidID
+		}
+		return nil
+	})
+}
+
 func (uv *userValidator) ByRemember(token string) (*User, error) {
 	user := User{Remember: token}
 	if err := runUserValFns(&user, uv.hmacRemember); err != nil {
@@ -95,8 +105,10 @@ func (uv *userValidator) Update(user *User) error {
 }
 
 func (uv *userValidator) Delete(id uint) error {
-	if id == 0 {
-		return ErrInvalidID
+	var user User
+	user.ID = id
+	if err := runUserValFns(&user, uv.idGreaterThan(0)); err != nil {
+		return err
 	}
 	return uv.UserDB.Delete(id)
 }
