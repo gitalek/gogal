@@ -9,11 +9,11 @@ import (
 var (
 	// ErrNotFound is returned when a resource cannot be found in the database.
 	ErrNotFound = errors.New("models: resource not found")
-	// ErrInvalidID is returned when an invalid ID is provided to a method like Delete.
-	ErrInvalidID = errors.New("models: ID provided was invalid")
-	// ErrInvalidPassword is reterned when an invalid password is used when attempting
+	// ErrIdInvalid is returned when an invalid ID is provided to a method like Delete.
+	ErrIdInvalid = errors.New("models: ID provided was invalid")
+	// ErrPasswordIncorrect is returned when an invalid password is used when attempting
 	// to authenticate a user.
-	ErrInvalidPassword = errors.New("models: incorrect password provided")
+	ErrPasswordIncorrect = errors.New("models: incorrect password provided")
 	// ErrEmailRequired is returned when an email address is not provided when creating a user.
 	ErrEmailRequired = errors.New("models: email address is required")
 	// ErrEmailInvalid is returned when an email address doesn't match regexp.

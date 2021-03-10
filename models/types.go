@@ -27,7 +27,7 @@ type UserService interface {
 	// If the email address provided is invalid, this will return
 	//   nil, ErrNotFound
 	// If the password provided is invalid, this will return
-	//   nil, ErrInvalidPassword
+	//   nil, ErrPasswordIncorrect
 	// If the email and password are both valid, this will return
 	//   user, nil
 	// Otherwise if another error is encountered this will return
