@@ -16,6 +16,18 @@ type userValidator struct {
 	emailRegexp *regexp.Regexp
 }
 
+func newUserValidator(udb UserDB, hmac hash.HMAC) (*userValidator, error) {
+	emailRegexp, err := regexp.Compile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,16}$`)
+	if err != nil {
+		return nil, err
+	}
+	return &userValidator{
+		UserDB: udb,
+		hmac: hmac,
+		emailRegexp: emailRegexp,
+	}, nil
+}
+
 type userValFn func(*User) error
 
 func runUserValFns(user *User, fns ...userValFn) error {
