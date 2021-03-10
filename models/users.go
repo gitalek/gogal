@@ -18,6 +18,9 @@ var (
 	ErrEmailRequired = errors.New("models: email address is required")
 	// ErrEmailInvalid is returned when an email address doesn't match regexp.
 	ErrEmailInvalid = errors.New("models: email address is not valid")
+	// ErrEmailTaken is returned when an update or create is attempted with an email address
+	// that is already in use.
+	ErrEmailTaken = errors.New("models: email address is already taken")
 	// userPwPepper is used for peppering passwords.
 	userPwPepper = "secret-random-string"
 	// hmacSecretKey is used for hashing remember tokens.
