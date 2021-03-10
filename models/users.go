@@ -21,6 +21,9 @@ var (
 	// ErrEmailTaken is returned when an update or create is attempted with an email address
 	// that is already in use.
 	ErrEmailTaken = errors.New("models: email address is already taken")
+	// ErrPasswordTooShort is returned when a user tries to set a password
+	// that is less than 8 characters long.
+	ErrPasswordTooShort = errors.New("models: password must be at least 8 characters long")
 	// userPwPepper is used for peppering passwords.
 	userPwPepper = "secret-random-string"
 	// hmacSecretKey is used for hashing remember tokens.
