@@ -11,7 +11,7 @@ import (
 type Users struct {
 	NewView   *views.View
 	LoginView *views.View
-	us        *models.UserService
+	us        models.UserService
 }
 
 type SignupForm struct {
@@ -25,7 +25,7 @@ type LoginForm struct {
 	Password string `schema:"password"`
 }
 
-func NewUsers(us *models.UserService) (*Users, error) {
+func NewUsers(us models.UserService) (*Users, error) {
 	viewNew, err := views.NewView("bootstrap", "users/new")
 	if err != nil {
 		return nil, err
@@ -74,7 +74,7 @@ func (u *Users) Login(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	user, err := u.us.Authenticate(form.Email, form.Password)
-	if err  != nil {
+	if err != nil {
 		switch err {
 		case models.ErrNotFound:
 			fmt.Fprintln(w, "Invalid email address.")
@@ -106,8 +106,8 @@ func (u *Users) signIn(w http.ResponseWriter, user *models.User) error {
 		}
 	}
 	cookie := http.Cookie{
-		Name: "remember_token",
-		Value: user.Remember,
+		Name:     "remember_token",
+		Value:    user.Remember,
 		HttpOnly: true,
 	}
 	http.SetCookie(w, &cookie)
