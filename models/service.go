@@ -1,6 +1,9 @@
 package models
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"github.com/gitalek/gogal/hash"
+	"golang.org/x/crypto/bcrypt"
+)
 
 type userService struct {
 	UserDB
@@ -11,9 +14,11 @@ func NewUserService(connStr string) (UserService, error) {
 	if err != nil {
 		return nil, err
 	}
+	hmac := hash.NewHMAC(hmacSecretKey)
 	return &userService{
 		UserDB: &userValidator{
 			UserDB: ug,
+			hmac:   hmac,
 		},
 	}, nil
 }

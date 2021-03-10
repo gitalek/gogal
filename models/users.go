@@ -23,8 +23,7 @@ var (
 	hmacSecretKey = "secret-hmac-key"
 )
 
-// userGorm represents database interaction layer
-// and implements the UserDB interface fully
+// userGorm represents database interaction layer and implements the UserDB interface fully.
 type userGorm struct {
 	db   *gorm.DB
 	hmac hash.HMAC
@@ -56,8 +55,7 @@ func (ug *userGorm) AutoMigrate() error {
 	return nil
 }
 
-// DestructiveReset method drops the user table and rebuilds it.
-// Used in development env.
+// DestructiveReset method drops the user table and rebuilds it. Used in development env.
 func (ug *userGorm) DestructiveReset() error {
 	err := ug.db.DropTableIfExists(&User{}).Error
 	if err != nil {
@@ -102,8 +100,7 @@ func (ug *userGorm) Delete(id uint) error {
 	return ug.db.Delete(&user).Error
 }
 
-// As a general rule, any error but ErrNotFound should
-// probably result in a 500 error.
+// As a general rule, any error but ErrNotFound should probably result in a 500 error.
 func (ug *userGorm) ByID(id uint) (*User, error) {
 	var user User
 	db := ug.db.Where("id = ?", id)
@@ -124,9 +121,10 @@ func (ug *userGorm) ByEmail(email string) (*User, error) {
 	return &user, nil
 }
 
-func (ug *userGorm) ByRemember(token string) (*User, error) {
+// ByRemember looks up a user with the given remember token (which must be already hashed)
+// and returns that user.
+func (ug *userGorm) ByRemember(rememberHash string) (*User, error) {
 	var user User
-	rememberHash := ug.hmac.Hash(token)
 	err := first(ug.db.Where("remember_hash = ?", rememberHash), &user)
 	if err != nil {
 		return nil, err
