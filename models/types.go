@@ -19,8 +19,19 @@ type UserDB interface {
 	DestructiveReset() error
 }
 
+// UserService is a set of methods used to manipulate and work with the user model
 type UserService interface {
 	UserDB
+	// Authenticate can be used to authenticate a user with the
+	// provided email address and password.
+	// If the email address provided is invalid, this will return
+	//   nil, ErrNotFound
+	// If the password provided is invalid, this will return
+	//   nil, ErrInvalidPassword
+	// If the email and password are both valid, this will return
+	//   user, nil
+	// Otherwise if another error is encountered this will return
+	//   nil, error
 	Authenticate(email, password string) (*User, error)
 }
 
