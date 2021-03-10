@@ -4,6 +4,7 @@ import (
 	"github.com/gitalek/gogal/hash"
 	"github.com/gitalek/gogal/rand"
 	"golang.org/x/crypto/bcrypt"
+	"regexp"
 	"strings"
 )
 
@@ -11,7 +12,8 @@ import (
 // data before passing it on the next UserDB in our interface chain.
 type userValidator struct {
 	UserDB
-	hmac hash.HMAC
+	hmac        hash.HMAC
+	emailRegexp *regexp.Regexp
 }
 
 type userValFn func(*User) error
