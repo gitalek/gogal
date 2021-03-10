@@ -16,6 +16,8 @@ var (
 	ErrInvalidPassword = errors.New("models: incorrect password provided")
 	// userPwPepper is used for peppering passwords.
 	userPwPepper = "secret-random-string"
+	// ErrEmailRequired is returned when an email address is not provided when creating a user
+	ErrEmailRequired = errors.New("models: email address is required")
 	// hmacSecretKey is used for hashing remember tokens.
 	hmacSecretKey = "secret-hmac-key"
 )
