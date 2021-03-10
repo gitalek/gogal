@@ -15,11 +15,12 @@ func NewUserService(connStr string) (UserService, error) {
 		return nil, err
 	}
 	hmac := hash.NewHMAC(hmacSecretKey)
+	uv, err := newUserValidator(ug, hmac)
+	if err != nil {
+		return nil, err
+	}
 	return &userService{
-		UserDB: &userValidator{
-			UserDB: ug,
-			hmac:   hmac,
-		},
+		UserDB: uv,
 	}, nil
 }
 
