@@ -76,6 +76,13 @@ func (uv *userValidator) normalizeEmail(user *User) error {
 	return nil
 }
 
+func (uv *userValidator) requireEmail(user *User) error {
+	if user.Email == "" {
+		return ErrEmailRequired
+	}
+	return nil
+}
+
 func (uv *userValidator) ByEmail(email string) (*User, error) {
 	var user User
 	if err := runUserValFns(&user, uv.normalizeEmail); err != nil {
@@ -105,6 +112,7 @@ func (uv *userValidator) Create(user *User) error {
 		uv.setRememberIfUnset,
 		uv.hmacRemember,
 		uv.normalizeEmail,
+		uv.requireEmail,
 	}
 	if err := runUserValFns(user, validators...); err != nil {
 		return err
@@ -118,6 +126,7 @@ func (uv *userValidator) Update(user *User) error {
 		uv.bcryptPassword,
 		uv.hmacRemember,
 		uv.normalizeEmail,
+		uv.requireEmail,
 	}
 	if err := runUserValFns(user, validators...); err != nil {
 		return err
