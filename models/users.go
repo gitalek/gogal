@@ -24,6 +24,8 @@ var (
 	// ErrPasswordTooShort is returned when a user tries to set a password
 	// that is less than 8 characters long.
 	ErrPasswordTooShort = errors.New("models: password must be at least 8 characters long")
+	// ErrPasswordRequired is returned when a create is attempted without a user password provided.
+	ErrPasswordRequired = errors.New("models: password is required")
 	// userPwPepper is used for peppering passwords.
 	userPwPepper = "secret-random-string"
 	// hmacSecretKey is used for hashing remember tokens.
