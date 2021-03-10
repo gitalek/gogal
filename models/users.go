@@ -23,23 +23,6 @@ var (
 	hmacSecretKey = "secret-hmac-key"
 )
 
-// UserDB is used to interact with the users database.
-type UserDB interface {
-	// Query for single users.
-	ByID(id uint) (*User, error)
-	ByEmail(email string) (*User, error)
-	ByRemember(token string) (*User, error)
-	// Alter users.
-	Create(user *User) error
-	Update(user *User) error
-	Delete(id uint) error
-	// Close is used to close a DB connection.
-	Close() error
-	// Migration helpers
-	AutoMigrate() error
-	DestructiveReset() error
-}
-
 // userGorm represents database interaction layer
 // and implements the UserDB interface fully
 type userGorm struct {
@@ -50,32 +33,6 @@ type userGorm struct {
 // Check if userGorm type implements UserDB interface.
 var _ UserDB = &userGorm{}
 
-type User struct {
-	gorm.Model
-	Name         string
-	Email        string `gorm:"not null;unique_index"`
-	Password     string `gorm:"-"`
-	PasswordHash string `gorm:"not null"`
-	Remember     string `gorm:"-"`
-	RememberHash string `gorm:"not null;unique_index"`
-}
-
-type UserService struct {
-	UserDB
-}
-
-func NewUserService(connStr string) (*UserService, error) {
-	ug, err := newUserGorm(connStr)
-	if err != nil {
-		return nil, err
-	}
-	return &UserService{
-		UserDB: userValidator{
-			UserDB: ug,
-		},
-	}, nil
-}
-
 func newUserGorm(connStr string) (*userGorm, error) {
 	db, err := gorm.Open("postgres", connStr)
 	if err != nil {
@@ -84,12 +41,6 @@ func newUserGorm(connStr string) (*userGorm, error) {
 	db.LogMode(true)
 	hmac := hash.NewHMAC(hmacSecretKey)
 	return &userGorm{db: db, hmac: hmac}, nil
-}
-
-// userValidator is a validation layer that validates and normalizes
-// data before passing it on the next UserDB in our interface chain.
-type userValidator struct {
-	UserDB
 }
 
 // Close method closes the UserService database connection.
@@ -113,36 +64,6 @@ func (ug *userGorm) DestructiveReset() error {
 		return err
 	}
 	return ug.AutoMigrate()
-}
-
-// Authenticate can be used to authenticate a user with the
-// provided email address and password.
-// If the email address provided is invalid, this will return
-//   nil, ErrNotFound
-// If the password provided is invalid, this will return
-//   nil, ErrInvalidPassword
-// If the email and password are both valid, this will return
-//   user, nil
-// Otherwise if another error is encountered this will return
-//   nil, error
-func (us *UserService) Authenticate(email, password string) (*User, error) {
-	foundUser, err := us.ByEmail(email)
-	if err != nil {
-		return nil, err
-	}
-	err = bcrypt.CompareHashAndPassword(
-		[]byte(foundUser.PasswordHash),
-		[]byte(password+userPwPepper),
-	)
-	// Three use cases:
-	switch err {
-	case nil:
-		return foundUser, nil
-	case bcrypt.ErrMismatchedHashAndPassword:
-		return nil, ErrInvalidPassword
-	default:
-		return nil, err
-	}
 }
 
 func (ug *userGorm) Create(user *User) error {
