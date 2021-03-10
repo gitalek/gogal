@@ -26,6 +26,11 @@ var (
 	ErrPasswordTooShort = errors.New("models: password must be at least 8 characters long")
 	// ErrPasswordRequired is returned when a create is attempted without a user password provided.
 	ErrPasswordRequired = errors.New("models: password is required")
+	// ErrRememberRequired is returned when a create or update
+	// is attempted without a user remember token hash.
+	ErrRememberRequired = errors.New("models: remember token is required")
+	// ErrRememberTooShort is returned when a remember token is not at least 32 bytes.
+	ErrRememberTooShort = errors.New("models: remember token must be at least 32 bytes")
 	// userPwPepper is used for peppering passwords.
 	userPwPepper = "secret-random-string"
 	// hmacSecretKey is used for hashing remember tokens.
