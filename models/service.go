@@ -2,16 +2,16 @@ package models
 
 import "golang.org/x/crypto/bcrypt"
 
-type UserService struct {
+type userService struct {
 	UserDB
 }
 
-func NewUserService(connStr string) (*UserService, error) {
+func NewUserService(connStr string) (*userService, error) {
 	ug, err := newUserGorm(connStr)
 	if err != nil {
 		return nil, err
 	}
-	return &UserService{
+	return &userService{
 		UserDB: userValidator{
 			UserDB: ug,
 		},
@@ -28,7 +28,7 @@ func NewUserService(connStr string) (*UserService, error) {
 //   user, nil
 // Otherwise if another error is encountered this will return
 //   nil, error
-func (us *UserService) Authenticate(email, password string) (*User, error) {
+func (us *userService) Authenticate(email, password string) (*User, error) {
 	foundUser, err := us.ByEmail(email)
 	if err != nil {
 		return nil, err
