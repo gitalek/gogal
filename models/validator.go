@@ -131,6 +131,20 @@ func (uv *userValidator) passwordMinLength(user *User) error {
 	return nil
 }
 
+func (uv *userValidator) passwordRequired(user *User) error {
+	if user.Password == "" {
+		return ErrPasswordRequired
+	}
+	return nil
+}
+
+func (uv *userValidator) passwordHashRequired(user *User) error {
+	if user.PasswordHash == "" {
+		return ErrPasswordRequired
+	}
+	return nil
+}
+
 func (uv *userValidator) ByEmail(email string) (*User, error) {
 	var user User
 	if err := runUserValFns(&user, uv.normalizeEmail); err != nil {
@@ -156,8 +170,10 @@ func (uv *userValidator) Create(user *User) error {
 		user.Remember = token
 	}
 	validators := []userValFn{
+		uv.passwordRequired,
 		uv.passwordMinLength,
 		uv.bcryptPassword,
+		uv.passwordHashRequired,
 		uv.setRememberIfUnset,
 		uv.hmacRemember,
 		uv.normalizeEmail,
@@ -176,6 +192,7 @@ func (uv *userValidator) Update(user *User) error {
 	validators := []userValFn{
 		uv.passwordMinLength,
 		uv.bcryptPassword,
+		uv.passwordHashRequired,
 		uv.hmacRemember,
 		uv.normalizeEmail,
 		uv.requireEmail,
