@@ -107,6 +107,20 @@ func (uv *userValidator) emailFormat(user *User) error {
 	return nil
 }
 
+func (uv *userValidator) emailIsAvailable(user *User) error {
+	existing, err := uv.ByEmail(user.Email)
+	if err == ErrNotFound {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	if user.ID != existing.ID {
+		return ErrEmailTaken
+	}
+	return nil
+}
+
 func (uv *userValidator) ByEmail(email string) (*User, error) {
 	var user User
 	if err := runUserValFns(&user, uv.normalizeEmail); err != nil {
@@ -138,6 +152,7 @@ func (uv *userValidator) Create(user *User) error {
 		uv.normalizeEmail,
 		uv.requireEmail,
 		uv.emailFormat,
+		uv.emailIsAvailable,
 	}
 	if err := runUserValFns(user, validators...); err != nil {
 		return err
@@ -153,6 +168,7 @@ func (uv *userValidator) Update(user *User) error {
 		uv.normalizeEmail,
 		uv.requireEmail,
 		uv.emailFormat,
+		uv.emailIsAvailable,
 	}
 	if err := runUserValFns(user, validators...); err != nil {
 		return err
