@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"github.com/gitalek/gogal/hash"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -24,7 +23,6 @@ var (
 // userGorm represents database interaction layer and implements the UserDB interface fully.
 type userGorm struct {
 	db   *gorm.DB
-	hmac hash.HMAC
 }
 
 // Check if userGorm type implements UserDB interface.
@@ -36,8 +34,7 @@ func newUserGorm(connStr string) (*userGorm, error) {
 		return nil, err
 	}
 	db.LogMode(true)
-	hmac := hash.NewHMAC(hmacSecretKey)
-	return &userGorm{db: db, hmac: hmac}, nil
+	return &userGorm{db: db}, nil
 }
 
 // Close method closes the UserService database connection.
