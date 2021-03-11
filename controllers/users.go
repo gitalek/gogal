@@ -84,10 +84,7 @@ func (u *Users) Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		switch err {
 		case models.ErrNotFound:
-			vd.Alert = &views.Alert{
-				Level: views.AlertLvlError,
-				Message: "Nu user exists with that email address",
-			}
+			vd.AlertError("Nu user exists with that email address")
 		default:
 			vd.SetAlert(err)
 		}
@@ -96,7 +93,8 @@ func (u *Users) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	err = u.signIn(w, user)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		vd.SetAlert(err)
+		u.LoginView.Render(w, vd)
 		return
 	}
 	http.Redirect(w, r, "/cookietest", http.StatusFound)
