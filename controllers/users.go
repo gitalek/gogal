@@ -82,7 +82,7 @@ func (u *Users) Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		switch err {
 		case models.ErrNotFound:
-			vd.AlertError("Nu user exists with that email address")
+			vd.AlertError("No user exists with that email address")
 		default:
 			vd.SetAlert(err)
 		}
