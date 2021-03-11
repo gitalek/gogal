@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/gitalek/gogal/context"
 	"github.com/gitalek/gogal/models"
 	"github.com/gitalek/gogal/views"
 	"net/http"
@@ -35,8 +36,10 @@ func (g *Galleries) Create(w http.ResponseWriter, r *http.Request) {
 		g.New.Render(w, vd)
 		return
 	}
+	user := context.User(r.Context())
 	gallery := models.Gallery{
 		Title:  form.Title,
+		UserID: user.ID,
 	}
 	if err := g.gs.Create(&gallery); err != nil {
 		vd.SetAlert(err)
