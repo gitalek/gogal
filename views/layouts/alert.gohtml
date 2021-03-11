@@ -1,8 +1,8 @@
 {{define "alert"}}
-    <div class="alert alert-danger alert-dismissible" role="alert">
+    <div class="alert alert-{{.Level}} alert-dismissible" role="alert">
         <button type="button" class="close" data-dissmiss="alert" aria-label="Close">
             <span aria-label="true">&times;</span>
         </button>
-        <strong>Danger!</strong> Something went wrong!
+        {{.Message}}
     </div>
 {{end}}
