@@ -23,4 +23,9 @@ func (gv *galleryValidator) userIDRequired(g *Gallery) error {
 	return nil
 }
 
-
+func (gv *galleryValidator) titleRequired(g *Gallery) error {
+	if g.Title == "" {
+		return ErrTitleRequired
+	}
+	return nil
+}
