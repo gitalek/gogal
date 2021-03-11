@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gitalek/gogal/controllers"
+	"github.com/gitalek/gogal/middleware"
 	"github.com/gitalek/gogal/models"
 	"github.com/gorilla/mux"
 	"log"
@@ -52,6 +53,13 @@ func main() {
 	galleriesC, err := controllers.NewGalleries(services.Gallery)
 	must(err)
 
+	// Middlewares section.
+	requireUserMw := middleware.RequireUser{
+		UserService: services.User,
+	}
+	newGallery := requireUserMw.Apply(galleriesC.New)
+	createGallery := requireUserMw.ApplyFn(galleriesC.Create)
+
 	r := mux.NewRouter()
 
 	// Static pages routes.
@@ -66,8 +74,8 @@ func main() {
 	r.HandleFunc("/login", usersC.Login).Methods("POST")
 	r.HandleFunc("/cookietest", usersC.CookieTest).Methods("GET")
 	// Gallery routes.
-	r.Handle("/galleries/new", galleriesC.New).Methods("GET")
-	r.HandleFunc("/galleries", galleriesC.Create).Methods("POST")
+	r.Handle("/galleries/new", newGallery).Methods("GET")
+	r.HandleFunc("/galleries", createGallery).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":3000", r))
 }
