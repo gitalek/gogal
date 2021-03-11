@@ -1,40 +1,8 @@
 package models
 
 import (
-	"errors"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-)
-
-var (
-	// ErrNotFound is returned when a resource cannot be found in the database.
-	ErrNotFound = errors.New("models: resource not found")
-	// ErrIdInvalid is returned when an invalid ID is provided to a method like Delete.
-	ErrIdInvalid = errors.New("models: ID provided was invalid")
-	// ErrPasswordIncorrect is returned when an invalid password is used when attempting
-	// to authenticate a user.
-	ErrPasswordIncorrect = errors.New("models: incorrect password provided")
-	// ErrEmailRequired is returned when an email address is not provided when creating a user.
-	ErrEmailRequired = errors.New("models: email address is required")
-	// ErrEmailInvalid is returned when an email address doesn't match regexp.
-	ErrEmailInvalid = errors.New("models: email address is not valid")
-	// ErrEmailTaken is returned when an update or create is attempted with an email address
-	// that is already in use.
-	ErrEmailTaken = errors.New("models: email address is already taken")
-	// ErrPasswordTooShort is returned when a user tries to set a password
-	// that is less than 8 characters long.
-	ErrPasswordTooShort = errors.New("models: password must be at least 8 characters long")
-	// ErrPasswordRequired is returned when a create is attempted without a user password provided.
-	ErrPasswordRequired = errors.New("models: password is required")
-	// ErrRememberRequired is returned when a create or update
-	// is attempted without a user remember token hash.
-	ErrRememberRequired = errors.New("models: remember token is required")
-	// ErrRememberTooShort is returned when a remember token is not at least 32 bytes.
-	ErrRememberTooShort = errors.New("models: remember token must be at least 32 bytes")
-	// userPwPepper is used for peppering passwords.
-	userPwPepper = "secret-random-string"
-	// hmacSecretKey is used for hashing remember tokens.
-	hmacSecretKey = "secret-hmac-key"
 )
 
 // userGorm represents database interaction layer and implements the UserDB interface fully.
