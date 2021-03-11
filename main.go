@@ -44,6 +44,7 @@ func main() {
 	defer services.Close()
 	services.AutoMigrate()
 
+	// Controllers section.
 	staticC, err := controllers.NewStatic()
 	must(err)
 	usersC, err := controllers.NewUsers(services.User)
@@ -66,6 +67,7 @@ func main() {
 	r.HandleFunc("/cookietest", usersC.CookieTest).Methods("GET")
 	// Gallery routes.
 	r.Handle("/galleries/new", galleriesC.New).Methods("GET")
+	r.HandleFunc("/galleries", galleriesC.Create).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":3000", r))
 }
