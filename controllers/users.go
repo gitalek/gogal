@@ -5,6 +5,7 @@ import (
 	"github.com/gitalek/gogal/models"
 	"github.com/gitalek/gogal/rand"
 	"github.com/gitalek/gogal/views"
+	"log"
 	"net/http"
 )
 
@@ -46,9 +47,16 @@ func (u *Users) New(w http.ResponseWriter, r *http.Request) {
 
 // Create processes the POST /signup route
 func (u *Users) Create(w http.ResponseWriter, r *http.Request) {
+	var vd views.Data
 	var form SignupForm
 	if err := parseForm(r, &form); err != nil {
-		panic(err)
+		log.Println(err)
+		vd.Alert = &views.Alert{
+			Level: views.AlertLvlError,
+			Message: views.AlertMsgGeneric,
+		}
+		u.NewView.Render(w, vd)
+		return
 	}
 	user := models.User{
 		Name:     form.Name,
