@@ -1,5 +1,9 @@
 package models
 
+const (
+	ErrUserIDRequired modelError = "models: user ID is required"
+)
+
 type galleryValFn func(*Gallery) error
 
 func runGalleryValFns(gallery *Gallery, fns ...galleryValFn) error {
