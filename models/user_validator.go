@@ -22,8 +22,8 @@ func newUserValidator(udb UserDB, hmac hash.HMAC) (*userValidator, error) {
 		return nil, err
 	}
 	return &userValidator{
-		UserDB: udb,
-		hmac: hmac,
+		UserDB:      udb,
+		hmac:        hmac,
 		emailRegexp: emailRegexp,
 	}, nil
 }
@@ -167,7 +167,7 @@ func (uv *userValidator) rememberHashRequired(user *User) error {
 }
 
 func (uv *userValidator) ByEmail(email string) (*User, error) {
-	var user User
+	user := User{Email: email}
 	if err := runUserValFns(&user, uv.normalizeEmail); err != nil {
 		return nil, err
 	}
