@@ -46,11 +46,6 @@ type UserDB interface {
 	Create(user *User) error
 	Update(user *User) error
 	Delete(id uint) error
-	// Close is used to close a DB connection.
-	Close() error
-	// Migration helpers
-	AutoMigrate() error
-	DestructiveReset() error
 }
 
 // UserService is a set of methods used to manipulate and work with the user model

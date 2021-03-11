@@ -37,14 +37,12 @@ func main() {
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname,
 	)
-	//us, err := models.NewUserService(connStr)
 	services, err := models.NewServices(connStr)
 	if err != nil {
 		panic(err)
 	}
-	//todo: simplify this
-	defer services.User.Close()
-	services.User.AutoMigrate()
+	defer services.Close()
+	services.AutoMigrate()
 
 	staticC, err := controllers.NewStatic()
 	must(err)

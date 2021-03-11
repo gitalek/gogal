@@ -13,28 +13,6 @@ type userGorm struct {
 // Check if userGorm type implements UserDB interface.
 var _ UserDB = &userGorm{}
 
-// Close method closes the UserService database connection.
-func (ug *userGorm) Close() error {
-	return ug.db.Close()
-}
-
-// AutoMigrate method will attempt to automatically migrate the users table.
-func (ug *userGorm) AutoMigrate() error {
-	if err := ug.db.AutoMigrate(&User{}).Error; err != nil {
-		return err
-	}
-	return nil
-}
-
-// DestructiveReset method drops the user table and rebuilds it. Used in development env.
-func (ug *userGorm) DestructiveReset() error {
-	err := ug.db.DropTableIfExists(&User{}).Error
-	if err != nil {
-		return err
-	}
-	return ug.AutoMigrate()
-}
-
 func (ug *userGorm) Create(user *User) error {
 	return ug.db.Create(user).Error
 }
