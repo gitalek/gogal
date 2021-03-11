@@ -3,7 +3,7 @@ package models
 import "github.com/jinzhu/gorm"
 
 func NewServices(connStr string) (*Services, error) {
-	db, err := gorm.Open("postgre", connStr)
+	db, err := gorm.Open("postgres", connStr)
 	if err != nil {
 		return nil, err
 	}
