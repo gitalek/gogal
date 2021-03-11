@@ -48,15 +48,24 @@ func main() {
 	must(err)
 	usersC, err := controllers.NewUsers(services.User)
 	must(err)
+	galleriesC, err := controllers.NewGalleries(services.Gallery)
+	must(err)
+
 	r := mux.NewRouter()
+
+	// Static pages routes.
 	r.Handle("/", staticC.Home)
 	r.Handle("/contact", staticC.Contact).Methods("GET")
 	r.Handle("/faq", staticC.FAQ).Methods("GET")
+	r.NotFoundHandler = http.HandlerFunc(err404)
+	// User routes.
 	r.HandleFunc("/signup", usersC.New).Methods("GET")
 	r.HandleFunc("/signup", usersC.Create).Methods("POST")
 	r.Handle("/login", usersC.LoginView).Methods("GET")
 	r.HandleFunc("/login", usersC.Login).Methods("POST")
 	r.HandleFunc("/cookietest", usersC.CookieTest).Methods("GET")
-	r.NotFoundHandler = http.HandlerFunc(err404)
+	// Gallery routes.
+	r.Handle("/galleries/new", galleriesC.New).Methods("GET")
+
 	log.Fatal(http.ListenAndServe(":3000", r))
 }
