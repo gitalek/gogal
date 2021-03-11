@@ -14,3 +14,10 @@ func runGalleryValFns(gallery *Gallery, fns ...galleryValFn) error {
 	}
 	return nil
 }
+
+func (gv *galleryValidator) userIDRequired(g *Gallery) error {
+	if g.UserID <= 0 {
+		return ErrUserIDRequired
+	}
+	return nil
+}
