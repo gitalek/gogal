@@ -13,15 +13,6 @@ type userGorm struct {
 // Check if userGorm type implements UserDB interface.
 var _ UserDB = &userGorm{}
 
-func newUserGorm(connStr string) (*userGorm, error) {
-	db, err := gorm.Open("postgres", connStr)
-	if err != nil {
-		return nil, err
-	}
-	db.LogMode(true)
-	return &userGorm{db: db}, nil
-}
-
 // Close method closes the UserService database connection.
 func (ug *userGorm) Close() error {
 	return ug.db.Close()

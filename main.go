@@ -37,15 +37,18 @@ func main() {
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname,
 	)
-	us, err := models.NewUserService(connStr)
+	//us, err := models.NewUserService(connStr)
+	services, err := models.NewServices(connStr)
 	if err != nil {
 		panic(err)
 	}
-	defer us.Close()
-	us.AutoMigrate()
+	//todo: simplify this
+	defer services.User.Close()
+	services.User.AutoMigrate()
+
 	staticC, err := controllers.NewStatic()
 	must(err)
-	usersC, err := controllers.NewUsers(us)
+	usersC, err := controllers.NewUsers(services.User)
 	must(err)
 	r := mux.NewRouter()
 	r.Handle("/", staticC.Home)

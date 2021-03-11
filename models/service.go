@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/gitalek/gogal/hash"
+	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -9,19 +10,16 @@ type userService struct {
 	UserDB
 }
 
-func NewUserService(connStr string) (UserService, error) {
-	ug, err := newUserGorm(connStr)
-	if err != nil {
-		return nil, err
-	}
+func NewUserService(db *gorm.DB) UserService {
+	ug := &userGorm{db: db}
 	hmac := hash.NewHMAC(hmacSecretKey)
 	uv, err := newUserValidator(ug, hmac)
 	if err != nil {
-		return nil, err
+		return nil
 	}
 	return &userService{
 		UserDB: uv,
-	}, nil
+	}
 }
 
 func (us *userService) Authenticate(email, password string) (*User, error) {
