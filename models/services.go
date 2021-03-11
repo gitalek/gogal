@@ -2,6 +2,12 @@ package models
 
 import "github.com/jinzhu/gorm"
 
+type Services struct {
+	Gallery GalleryService
+	User    UserService
+	db      *gorm.DB
+}
+
 func NewServices(connStr string) (*Services, error) {
 	db, err := gorm.Open("postgres", connStr)
 	if err != nil {
@@ -13,12 +19,6 @@ func NewServices(connStr string) (*Services, error) {
 		Gallery: &galleryGorm{},
 		db:      db,
 	}, nil
-}
-
-type Services struct {
-	Gallery GalleryService
-	User    UserService
-	db      *gorm.DB
 }
 
 // Close method closes the database connection.
