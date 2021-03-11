@@ -39,7 +39,15 @@ func NewUsers(us models.UserService) (*Users, error) {
 
 // New processes the GET /new route
 func (u *Users) New(w http.ResponseWriter, r *http.Request) {
-	if err := u.NewView.Render(w, nil); err != nil {
+	alert := views.Alert{
+		Level:   views.AlertLvlSuccess,
+		Message: "Successfully rendered a dynamic alert!",
+	}
+	data := views.Data{
+		Alert: &alert,
+		Yield: "this can be any data b/c its type is interface",
+	}
+	if err := u.NewView.Render(w, data); err != nil {
 		panic(err)
 	}
 }
