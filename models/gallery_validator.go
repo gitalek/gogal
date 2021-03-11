@@ -2,6 +2,7 @@ package models
 
 const (
 	ErrUserIDRequired modelError = "models: user ID is required"
+	ErrTitleRequired modelError = "models: title is required"
 )
 
 type galleryValFn func(*Gallery) error
@@ -21,3 +22,5 @@ func (gv *galleryValidator) userIDRequired(g *Gallery) error {
 	}
 	return nil
 }
+
+
