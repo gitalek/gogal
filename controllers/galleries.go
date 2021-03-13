@@ -74,21 +74,10 @@ func (g *Galleries) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (g *Galleries) Show(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
+	gallery, err := g.galleryByID(w, r)
 	if err != nil {
-		http.Error(w, "Invalid gallery ID", http.StatusFound)
-		return
-	}
-
-	gallery, err := g.gs.ByID(uint(id))
-	if err != nil {
-		switch err {
-		case models.ErrNotFound:
-			http.Error(w, "Gallery not found", http.StatusNotFound)
-		default:
-			http.Error(w, "Whoops! Something went wrong.", http.StatusInternalServerError)
-		}
+		// The galleryByID method has already rendered the error for us,
+		// so we just need to return here.
 		return
 	}
 	var vd views.Data
