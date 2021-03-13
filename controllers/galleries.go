@@ -9,8 +9,9 @@ import (
 )
 
 type Galleries struct {
-	New *views.View
-	gs  models.GalleryService
+	New      *views.View
+	ShowView *views.View
+	gs       models.GalleryService
 }
 
 type GalleryForm struct {
@@ -22,8 +23,13 @@ func NewGalleries(gs models.GalleryService) (*Galleries, error) {
 	if err != nil {
 		return nil, err
 	}
+	showView, err := views.NewView("bootstrap", "galleries/show")
+	if err != nil {
+		return nil, err
+	}
 	return &Galleries{
 		New: viewNew,
+		ShowView: showView,
 		gs:  gs,
 	}, nil
 }
