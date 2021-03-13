@@ -84,3 +84,24 @@ func (g *Galleries) Show(w http.ResponseWriter, r *http.Request) {
 	vd.Yield = gallery
 	g.ShowView.Render(w, vd)
 }
+
+func (g *Galleries) Edit(w http.ResponseWriter, r *http.Request) {
+	gallery, err := g.galleryByID(w, r)
+	if err != nil {
+		// The galleryByID method has already rendered the error for us,
+		// so we just need to return here.
+		return
+	}
+
+	user := context.User(r.Context())
+	if gallery.UserID != user.ID {
+		http.Error(
+			w,
+			"You do not have permission to edit this gallery",
+			http.StatusNotFound,
+		)
+	}
+	var vd views.Data
+	vd.Yield = gallery
+	g.EditView.Render(w, vd)
+}
