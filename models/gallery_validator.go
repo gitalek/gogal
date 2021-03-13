@@ -16,16 +16,23 @@ func runGalleryValFns(gallery *Gallery, fns ...galleryValFn) error {
 	return nil
 }
 
-func (gv *galleryValidator) userIDRequired(g *Gallery) error {
-	if g.UserID <= 0 {
+func (gv *galleryValidator) userIDRequired(gallery *Gallery) error {
+	if gallery.UserID <= 0 {
 		return ErrUserIDRequired
 	}
 	return nil
 }
 
-func (gv *galleryValidator) titleRequired(g *Gallery) error {
-	if g.Title == "" {
+func (gv *galleryValidator) titleRequired(gallery *Gallery) error {
+	if gallery.Title == "" {
 		return ErrTitleRequired
+	}
+	return nil
+}
+
+func (gv *galleryValidator) nonZeroID(gallery *Gallery) error {
+	if gallery.ID <= 0 {
+		return ErrIdInvalid
 	}
 	return nil
 }
@@ -52,4 +59,13 @@ func (gv *galleryValidator) Update(gallery *Gallery) error {
 		return err
 	}
 	return gv.GalleryDB.Update(gallery)
+}
+
+func (gv *galleryValidator) Delete(id uint) error {
+	var gallery Gallery
+	gallery.ID = id
+	if err := runGalleryValFns(&gallery, gv.nonZeroID); err != nil {
+		return err
+	}
+	return gv.GalleryDB.Delete(gallery.ID)
 }
