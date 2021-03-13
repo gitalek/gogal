@@ -13,8 +13,9 @@ type GalleryService interface {
 }
 
 type GalleryDB interface {
-	Create(gallery *Gallery) error
 	ByID(id uint) (*Gallery, error)
+	Create(gallery *Gallery) error
+	Update(gallery *Gallery) error
 }
 
 type galleryService struct {
@@ -41,10 +42,6 @@ type galleryGorm struct {
 
 var _ GalleryDB = &galleryGorm{}
 
-func (gg *galleryGorm) Create(gallery *Gallery) error {
-	return gg.db.Create(gallery).Error
-}
-
 func (gg *galleryGorm) ByID(id uint) (*Gallery, error) {
 	var gallery Gallery
 	db := gg.db.Where("id = ?", id)
@@ -53,4 +50,12 @@ func (gg *galleryGorm) ByID(id uint) (*Gallery, error) {
 		return nil, err
 	}
 	return &gallery, nil
+}
+
+func (gg *galleryGorm) Create(gallery *Gallery) error {
+	return gg.db.Create(gallery).Error
+}
+
+func (gg *galleryGorm) Update(gallery *Gallery) error {
+	return gg.db.Save(gallery).Error
 }
