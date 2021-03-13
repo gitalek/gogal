@@ -16,18 +16,6 @@ func runGalleryValFns(gallery *Gallery, fns ...galleryValFn) error {
 	return nil
 }
 
-func (gv *galleryValidator) Create(gallery *Gallery) error {
-	err := runGalleryValFns(
-		gallery,
-		gv.userIDRequired,
-		gv.titleRequired,
-	)
-	if err != nil {
-		return err
-	}
-	return gv.GalleryDB.Create(gallery)
-}
-
 func (gv *galleryValidator) userIDRequired(g *Gallery) error {
 	if g.UserID <= 0 {
 		return ErrUserIDRequired
@@ -40,4 +28,28 @@ func (gv *galleryValidator) titleRequired(g *Gallery) error {
 		return ErrTitleRequired
 	}
 	return nil
+}
+
+func (gv *galleryValidator) Create(gallery *Gallery) error {
+	err := runGalleryValFns(
+		gallery,
+		gv.userIDRequired,
+		gv.titleRequired,
+	)
+	if err != nil {
+		return err
+	}
+	return gv.GalleryDB.Create(gallery)
+}
+
+func (gv *galleryValidator) Update(gallery *Gallery) error {
+	err := runGalleryValFns(
+		gallery,
+		gv.userIDRequired,
+		gv.titleRequired,
+	)
+	if err != nil {
+		return err
+	}
+	return gv.GalleryDB.Update(gallery)
 }
