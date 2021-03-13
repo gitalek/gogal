@@ -57,11 +57,3 @@ func (ug *userGorm) ByRemember(rememberHash string) (*User, error) {
 	}
 	return &user, nil
 }
-
-func first(db *gorm.DB, dst interface{}) error {
-	err := db.First(dst).Error
-	if err == gorm.ErrRecordNotFound {
-		return ErrNotFound
-	}
-	return err
-}
