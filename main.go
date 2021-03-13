@@ -45,12 +45,14 @@ func main() {
 	defer services.Close()
 	services.AutoMigrate()
 
+	r := mux.NewRouter()
+
 	// Controllers section.
 	staticC, err := controllers.NewStatic()
 	must(err)
 	usersC, err := controllers.NewUsers(services.User)
 	must(err)
-	galleriesC, err := controllers.NewGalleries(services.Gallery)
+	galleriesC, err := controllers.NewGalleries(services.Gallery, r)
 	must(err)
 
 	// Middlewares section.
@@ -59,8 +61,6 @@ func main() {
 	}
 	newGallery := requireUserMw.Apply(galleriesC.New)
 	createGallery := requireUserMw.ApplyFn(galleriesC.Create)
-
-	r := mux.NewRouter()
 
 	// Static pages routes.
 	r.Handle("/", staticC.Home)

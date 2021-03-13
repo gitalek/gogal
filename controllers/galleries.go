@@ -14,13 +14,14 @@ type Galleries struct {
 	New      *views.View
 	ShowView *views.View
 	gs       models.GalleryService
+	r        *mux.Router
 }
 
 type GalleryForm struct {
 	Title string `schema:"title"`
 }
 
-func NewGalleries(gs models.GalleryService) (*Galleries, error) {
+func NewGalleries(gs models.GalleryService, r *mux.Router) (*Galleries, error) {
 	viewNew, err := views.NewView("bootstrap", "galleries/new")
 	if err != nil {
 		return nil, err
@@ -30,9 +31,10 @@ func NewGalleries(gs models.GalleryService) (*Galleries, error) {
 		return nil, err
 	}
 	return &Galleries{
-		New: viewNew,
+		New:      viewNew,
 		ShowView: showView,
-		gs:  gs,
+		gs:       gs,
+		r:        r,
 	}, nil
 }
 
@@ -57,7 +59,7 @@ func (g *Galleries) Create(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, gallery)
 }
 
-func (g *Galleries) Show(w http.ResponseWriter, r *http.Request)  {
+func (g *Galleries) Show(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
