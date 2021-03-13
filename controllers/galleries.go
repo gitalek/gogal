@@ -16,6 +16,7 @@ const (
 type Galleries struct {
 	New      *views.View
 	ShowView *views.View
+	EditView *views.View
 	gs       models.GalleryService
 	r        *mux.Router
 }
@@ -33,9 +34,14 @@ func NewGalleries(gs models.GalleryService, r *mux.Router) (*Galleries, error) {
 	if err != nil {
 		return nil, err
 	}
+	editView, err := views.NewView("bootstrap", "galleries/edit")
+	if err != nil {
+		return nil, err
+	}
 	return &Galleries{
 		New:      viewNew,
 		ShowView: showView,
+		EditView: editView,
 		gs:       gs,
 		r:        r,
 	}, nil
