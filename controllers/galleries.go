@@ -100,6 +100,7 @@ func (g *Galleries) Edit(w http.ResponseWriter, r *http.Request) {
 			"You do not have permission to edit this gallery",
 			http.StatusNotFound,
 		)
+		return
 	}
 	var vd views.Data
 	vd.Yield = gallery

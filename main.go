@@ -61,6 +61,7 @@ func main() {
 	}
 	newGallery := requireUserMw.Apply(galleriesC.New)
 	createGallery := requireUserMw.ApplyFn(galleriesC.Create)
+	editGallery := requireUserMw.ApplyFn(galleriesC.Edit)
 
 	// Static pages routes.
 	r.Handle("/", staticC.Home)
@@ -78,6 +79,7 @@ func main() {
 	r.HandleFunc("/galleries", createGallery).Methods("POST")
 	r.HandleFunc("/galleries/{id:[0-9]+}", galleriesC.Show).Methods("GET").
 		Name(controllers.ShowGallery)
+	r.HandleFunc("/galleries/{id:[0-9]+}/edit", editGallery).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":3000", r))
 }
