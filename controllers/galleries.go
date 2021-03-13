@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/gitalek/gogal/context"
 	"github.com/gitalek/gogal/models"
 	"github.com/gitalek/gogal/views"
@@ -98,7 +99,7 @@ func (g *Galleries) Edit(w http.ResponseWriter, r *http.Request) {
 		http.Error(
 			w,
 			"You do not have permission to edit this gallery",
-			http.StatusNotFound,
+			http.StatusForbidden,
 		)
 		return
 	}
@@ -140,4 +141,32 @@ func (g *Galleries) Update(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	g.ShowView.Render(w, vd)
+}
+
+// POST /galleries/:id/delete
+func (g *Galleries) Delete(w http.ResponseWriter, r *http.Request) {
+	gallery, err := g.galleryByID(w, r)
+	if err != nil {
+		// The galleryByID method has already rendered the error for us,
+		// so we just need to return here.
+		return
+	}
+	user := context.User(r.Context())
+	if gallery.UserID != user.ID {
+		http.Error(
+			w,
+			"You do not have permission to delete this gallery",
+			http.StatusForbidden,
+		)
+		return
+	}
+	var vd views.Data
+	err = g.gs.Delete(gallery.ID)
+	if err != nil {
+		vd.SetAlert(err)
+		vd.Yield = gallery
+		g.ShowView.Render(w, vd)
+		return
+	}
+	fmt.Fprintln(w, "successfully deleted!")
 }
