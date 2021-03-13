@@ -5,7 +5,9 @@ import (
 	"github.com/gitalek/gogal/context"
 	"github.com/gitalek/gogal/models"
 	"github.com/gitalek/gogal/views"
+	"github.com/gorilla/mux"
 	"net/http"
+	"strconv"
 )
 
 type Galleries struct {
@@ -53,4 +55,20 @@ func (g *Galleries) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintln(w, gallery)
+}
+
+func (g *Galleries) Show(w http.ResponseWriter, r *http.Request)  {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, "Invalid gallery ID", http.StatusFound)
+		return
+	}
+	_ = id
+	gallery := models.Gallery{
+		Title: "A temporary fake gallery with ID: " + vars["id"],
+	}
+	var vd views.Data
+	vd.Yield = gallery
+	g.ShowView.Render(w, vd)
 }
