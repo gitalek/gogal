@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/gitalek/gogal/context"
 	"github.com/gitalek/gogal/models"
 	"github.com/gitalek/gogal/views"
@@ -177,7 +176,12 @@ func (g *Galleries) Delete(w http.ResponseWriter, r *http.Request) {
 		g.ShowView.Render(w, vd)
 		return
 	}
-	fmt.Fprintln(w, "successfully deleted!")
+	url, err := g.r.Get(IndexGalleries).URL()
+	if err != nil {
+		http.Redirect(w, r, "/", http.StatusFound)
+		return
+	}
+	http.Redirect(w, r, url.Path, http.StatusFound)
 }
 
 func (g *Galleries) Index(w http.ResponseWriter, r *http.Request) {
