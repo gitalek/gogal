@@ -17,10 +17,15 @@
                     <li><a href="/">Home</a></li>
                     <li><a href="/contact">Contact</a></li>
                     <li><a href="/faq">FAQ</a></li>
+                    {{if .User}}
+                        <li><a href="/galleries">Galleries</a></li>
+                    {{end}}
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/login">Log In</a></li>
-                    <li><a href="/signup">Sign Up</a></li>
+                    {{if not .User}}
+                        <li><a href="/login">Log In</a></li>
+                        <li><a href="/signup">Sign Up</a></li>
+                    {{end}}
                 </ul>
             </div>
         </div>
