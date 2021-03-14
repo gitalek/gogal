@@ -56,9 +56,11 @@ func main() {
 	must(err)
 
 	// Middlewares section.
-	requireUserMw := middleware.RequireUser{
+	userMw := middleware.User{
 		UserService: services.User,
 	}
+	requireUserMw := middleware.RequireUser{}
+
 	newGallery := requireUserMw.Apply(galleriesC.New)
 	createGallery := requireUserMw.ApplyFn(galleriesC.Create)
 	editGallery := requireUserMw.ApplyFn(galleriesC.Edit)
@@ -88,5 +90,5 @@ func main() {
 	r.HandleFunc("/galleries", indexGallery).Methods("GET").
 		Name(controllers.IndexGalleries)
 
-	log.Fatal(http.ListenAndServe(":3000", r))
+	log.Fatal(http.ListenAndServe(":3000", userMw.Apply(r)))
 }
