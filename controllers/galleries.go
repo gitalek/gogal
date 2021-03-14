@@ -15,11 +15,12 @@ const (
 )
 
 type Galleries struct {
-	New      *views.View
-	ShowView *views.View
-	EditView *views.View
-	gs       models.GalleryService
-	r        *mux.Router
+	New       *views.View
+	ShowView  *views.View
+	EditView  *views.View
+	IndexView *views.View
+	gs        models.GalleryService
+	r         *mux.Router
 }
 
 type GalleryForm struct {
@@ -39,12 +40,17 @@ func NewGalleries(gs models.GalleryService, r *mux.Router) (*Galleries, error) {
 	if err != nil {
 		return nil, err
 	}
+	indexView, err := views.NewView("bootstrap", "galleries/index")
+	if err != nil {
+		return nil, err
+	}
 	return &Galleries{
-		New:      viewNew,
-		ShowView: showView,
-		EditView: editView,
-		gs:       gs,
-		r:        r,
+		New:       viewNew,
+		ShowView:  showView,
+		EditView:  editView,
+		IndexView: indexView,
+		gs:        gs,
+		r:         r,
 	}, nil
 }
 
@@ -86,6 +92,7 @@ func (g *Galleries) Show(w http.ResponseWriter, r *http.Request) {
 	g.ShowView.Render(w, vd)
 }
 
+// POST /galleries/:id/edit
 func (g *Galleries) Edit(w http.ResponseWriter, r *http.Request) {
 	gallery, err := g.galleryByID(w, r)
 	if err != nil {
@@ -169,4 +176,16 @@ func (g *Galleries) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintln(w, "successfully deleted!")
+}
+
+func (g *Galleries) Index(w http.ResponseWriter, r *http.Request) {
+	user := context.User(r.Context())
+	galleries, err := g.gs.ByUserID(user.ID)
+	if err != nil {
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
+		return
+	}
+	var vd views.Data
+	vd.Yield = galleries
+	g.IndexView.Render(w, vd)
 }
