@@ -81,10 +81,12 @@ func main() {
 	r.HandleFunc("/galleries", createGallery).Methods("POST")
 	r.HandleFunc("/galleries/{id:[0-9]+}", galleriesC.Show).Methods("GET").
 		Name(controllers.ShowGallery)
-	r.HandleFunc("/galleries/{id:[0-9]+}/edit", editGallery).Methods("GET")
+	r.HandleFunc("/galleries/{id:[0-9]+}/edit", editGallery).Methods("GET").
+		Name(controllers.EditGallery)
 	r.HandleFunc("/galleries/{id:[0-9]+}/update", updateGallery).Methods("POST")
 	r.HandleFunc("/galleries/{id:[0-9]+}/delete", deleteGallery).Methods("POST")
-	r.HandleFunc("/galleries", indexGallery).Methods("GET")
+	r.HandleFunc("/galleries", indexGallery).Methods("GET").
+		Name(controllers.IndexGalleries)
 
 	log.Fatal(http.ListenAndServe(":3000", r))
 }

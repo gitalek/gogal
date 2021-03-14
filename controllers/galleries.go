@@ -11,7 +11,9 @@ import (
 )
 
 const (
-	ShowGallery = "show_gallery"
+	IndexGalleries = "index_galleries"
+	ShowGallery    = "show_gallery"
+	EditGallery    = "edit_gallery"
 )
 
 type Galleries struct {
