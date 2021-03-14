@@ -50,7 +50,7 @@ func main() {
 	// Controllers section.
 	staticC, err := controllers.NewStatic()
 	must(err)
-	usersC, err := controllers.NewUsers(services.User)
+	usersC, err := controllers.NewUsers(services.User, r)
 	must(err)
 	galleriesC, err := controllers.NewGalleries(services.Gallery, r)
 	must(err)

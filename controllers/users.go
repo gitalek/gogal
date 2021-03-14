@@ -5,6 +5,7 @@ import (
 	"github.com/gitalek/gogal/models"
 	"github.com/gitalek/gogal/rand"
 	"github.com/gitalek/gogal/views"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
@@ -12,6 +13,7 @@ type Users struct {
 	NewView   *views.View
 	LoginView *views.View
 	us        models.UserService
+	r         *mux.Router
 }
 
 type SignupForm struct {
@@ -25,7 +27,7 @@ type LoginForm struct {
 	Password string `schema:"password"`
 }
 
-func NewUsers(us models.UserService) (*Users, error) {
+func NewUsers(us models.UserService, r *mux.Router) (*Users, error) {
 	viewNew, err := views.NewView("bootstrap", "users/new")
 	if err != nil {
 		return nil, err
@@ -34,7 +36,7 @@ func NewUsers(us models.UserService) (*Users, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Users{NewView: viewNew, LoginView: viewLogin, us: us}, nil
+	return &Users{NewView: viewNew, LoginView: viewLogin, us: us, r: r}, nil
 }
 
 // New processes the GET /new route
@@ -66,7 +68,13 @@ func (u *Users) Create(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusFound)
 		return
 	}
-	http.Redirect(w, r, "/cookietest", http.StatusFound)
+
+	url, err := u.r.Get(IndexGalleries).URL()
+	if err != nil {
+		http.Redirect(w, r, "/", http.StatusFound)
+		return
+	}
+	http.Redirect(w, r, url.Path, http.StatusFound)
 }
 
 // Login processes the POST /login route
@@ -95,7 +103,12 @@ func (u *Users) Login(w http.ResponseWriter, r *http.Request) {
 		u.LoginView.Render(w, vd)
 		return
 	}
-	http.Redirect(w, r, "/cookietest", http.StatusFound)
+	url, err := u.r.Get(IndexGalleries).URL()
+	if err != nil {
+		http.Redirect(w, r, "/", http.StatusFound)
+		return
+	}
+	http.Redirect(w, r, url.Path, http.StatusFound)
 }
 
 func (u *Users) signIn(w http.ResponseWriter, user *models.User) error {
