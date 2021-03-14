@@ -1,6 +1,9 @@
 package views
 
-import "log"
+import (
+	"github.com/gitalek/gogal/models"
+	"log"
+)
 
 const (
 	AlertLvlError   = "danger"
@@ -18,6 +21,7 @@ type PublicError interface {
 
 type Data struct {
 	Alert *Alert
+	User  *models.User
 	Yield interface{}
 }
 
@@ -42,7 +46,7 @@ func (d *Data) SetAlert(err error) {
 
 func (d *Data) AlertError(msg string) {
 	d.Alert = &Alert{
-		Level: AlertLvlError,
+		Level:   AlertLvlError,
 		Message: msg,
 	}
 }
