@@ -89,8 +89,11 @@ func main() {
 	r.HandleFunc("/galleries/{id:[0-9]+}/delete", deleteGallery).Methods("POST")
 	r.HandleFunc("/galleries", indexGallery).Methods("GET").
 		Name(controllers.IndexGalleries)
+	// Image routes
 	r.HandleFunc("/galleries/{id:[0-9]+}/images", requireUserMw.ApplyFn(galleriesC.ImageUpload)).
 		Methods("POST")
+	imageHandler := http.FileServer(http.Dir("./images/"))
+	r.PathPrefix("/images/").Handler(http.StripPrefix("/images", imageHandler))
 
 	log.Fatal(http.ListenAndServe(":3000", userMw.Apply(r)))
 }
