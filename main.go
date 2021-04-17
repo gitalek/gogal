@@ -52,7 +52,7 @@ func main() {
 	must(err)
 	usersC, err := controllers.NewUsers(services.User, r)
 	must(err)
-	galleriesC, err := controllers.NewGalleries(services.Gallery, r)
+	galleriesC, err := controllers.NewGalleries(services.Gallery, services.Image, r)
 	must(err)
 
 	// Middlewares section.

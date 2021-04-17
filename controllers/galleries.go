@@ -1,15 +1,11 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/gitalek/gogal/context"
 	"github.com/gitalek/gogal/models"
 	"github.com/gitalek/gogal/views"
 	"github.com/gorilla/mux"
-	"io"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strconv"
 )
 
@@ -26,6 +22,7 @@ type Galleries struct {
 	EditView  *views.View
 	IndexView *views.View
 	gs        models.GalleryService
+	is        models.ImageService
 	r         *mux.Router
 }
 
@@ -33,7 +30,7 @@ type GalleryForm struct {
 	Title string `schema:"title"`
 }
 
-func NewGalleries(gs models.GalleryService, r *mux.Router) (*Galleries, error) {
+func NewGalleries(gs models.GalleryService, is models.ImageService, r *mux.Router) (*Galleries, error) {
 	viewNew, err := views.NewView("bootstrap", "galleries/new")
 	if err != nil {
 		return nil, err
@@ -56,6 +53,7 @@ func NewGalleries(gs models.GalleryService, r *mux.Router) (*Galleries, error) {
 		EditView:  editView,
 		IndexView: indexView,
 		gs:        gs,
+		is:        is,
 		r:         r,
 	}, nil
 }
@@ -212,21 +210,13 @@ func (g *Galleries) ImageUpload(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Gallery not found", http.StatusNotFound)
 		return
 	}
-	// TODO: Finish implementing this
+
 	var vd views.Data
 	vd.Yield = gallery
 	err = r.ParseMultipartForm(maxMultiPartMem)
 	if err != nil {
 		// If we can't parse the form just render an error alert on the
 		// edit gallery page
-		vd.SetAlert(err)
-		g.EditView.Render(w, r, vd)
-		return
-	}
-
-	galleryPath := filepath.Join("images", "galleries", fmt.Sprintf("%v", gallery.ID))
-	err = os.MkdirAll(galleryPath, 0755)
-	if err != nil {
 		vd.SetAlert(err)
 		g.EditView.Render(w, r, vd)
 		return
@@ -244,17 +234,7 @@ func (g *Galleries) ImageUpload(w http.ResponseWriter, r *http.Request) {
 		}
 		defer file.Close()
 
-		// Create a destination file
-		dst, err := os.Create(filepath.Join(galleryPath, f.Filename))
-		if err != nil {
-			vd.SetAlert(err)
-			g.EditView.Render(w, r, vd)
-			return
-		}
-		defer dst.Close()
-
-		// Copy uploaded file data to the destination file
-		_, err = io.Copy(dst, file)
+		err = g.is.Create(gallery.ID, file, f.Filename)
 		if err != nil {
 			vd.SetAlert(err)
 			g.EditView.Render(w, r, vd)
