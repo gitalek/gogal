@@ -4,11 +4,9 @@
             <h1>
                 {{.Title}}
             </h1>
-            <u>
-                {{range .Images}}
-                    <li>{{.}}</li>
-                {{end}}
-            </u>
+            {{range .Images}}
+                <img src="{{.}}">
+            {{end}}
         </div>
     </div>
 {{end}}
