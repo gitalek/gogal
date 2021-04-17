@@ -1,14 +1,35 @@
 {{define "yield"}}
     <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Edit your gallery</h3>
-                </div>
-                <div class="panel-body">
-                    {{template "editGalleryForm" .}}
-                </div>
-            </div>
+        <div class="col-md-10 col-md-offset-1">
+            <h3>Edit your gallery</h3>
+                <hr>
+        </div>
+        <div class="col-md-12">
+            {{template "editGalleryForm" .}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1">
+            <label class="control-label pull-right">
+                Images
+            </label>
+        </div>
+        <div class="col-md-10">
+            {{template "galleryImages" .}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {{template "uploadImageForm" .}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <h3>Dangerous buttons...</h3>
+            <hr>
+        </div>
+        <div class="col-md-12">
+            {{template "deleteGalleryForm" .}}
         </div>
     </div>
 {{end}}
