@@ -29,7 +29,7 @@ func (i *Image) RelativePath() string {
 
 type ImageService interface {
 	Create(galleryID uint, r io.Reader, filename string) error
-	ByGalleryID(galleryID uint) ([]string, error)
+	ByGalleryID(galleryID uint) ([]Image, error)
 }
 
 type imageService struct{}
@@ -59,17 +59,21 @@ func (is *imageService) Create(galleryID uint, r io.Reader, filename string) err
 	return nil
 }
 
-func (is *imageService) ByGalleryID(galleryID uint) ([]string, error) {
+func (is *imageService) ByGalleryID(galleryID uint) ([]Image, error) {
 	path := is.imagePath(galleryID)
 	strings, err := filepath.Glob(filepath.Join(path, "*"))
 	if err != nil {
 		return nil, err
 	}
-	// Add a leading "/" to all image file paths
-	for i := range strings {
-		strings[i] = "/" + strings[i]
+
+	ret := make([]Image, len(strings))
+	for i, imgStr := range strings {
+		ret[i] = Image{
+			Filename:  filepath.Base(imgStr),
+			GalleryID: galleryID,
+		}
 	}
-	return strings, nil
+	return ret, nil
 }
 
 func (is *imageService) imagePath(galleryID uint) string {
