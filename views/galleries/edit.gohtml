@@ -80,13 +80,18 @@
     {{range .ImagesSplitN 6}}
         <div class="col-md-2">
             {{range .}}
-                <a href="{{.}}"><img src="{{.}}" class="thumbnail"></a>
+                <a href="{{.Path}}"><img src="{{.Path}}" class="thumbnail"></a>
+                {{template "deleteImageForm"}}
             {{end}}
         </div>
     {{end}}
     <style>
         .thumbnail {
             width: 100%;
+            margin-bottom: 6px;
+        }
+        .btn-delete {
+            margin-bottom: 6px;
         }
     </style>
 {{end}}
