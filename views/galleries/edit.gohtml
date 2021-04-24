@@ -77,7 +77,16 @@
 {{end}}
 
 {{define "galleryImages"}}
-    {{range .Images}}
-        <img src="{{.}}">
+    {{range .ImagesSplitN 6}}
+        <div class="col-md-2">
+            {{range .}}
+                <a href="{{.}}"><img src="{{.}}" class="thumbnail"></a>
+            {{end}}
+        </div>
+        <style>
+            .thumbnail {
+                width: 100%;
+            }
+        </style>
     {{end}}
 {{end}}
