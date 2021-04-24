@@ -30,6 +30,7 @@ func (i *Image) RelativePath() string {
 type ImageService interface {
 	Create(galleryID uint, r io.Reader, filename string) error
 	ByGalleryID(galleryID uint) ([]Image, error)
+	Delete(i *Image) error
 }
 
 type imageService struct{}
@@ -57,6 +58,10 @@ func (is *imageService) Create(galleryID uint, r io.Reader, filename string) err
 		return err
 	}
 	return nil
+}
+
+func (is *imageService) Delete(i *Image) error {
+	return os.Remove(i.RelativePath())
 }
 
 func (is *imageService) ByGalleryID(galleryID uint) ([]Image, error) {
