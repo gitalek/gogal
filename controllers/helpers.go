@@ -4,6 +4,7 @@ import (
 	"github.com/gitalek/gogal/models"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/schema"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -23,6 +24,7 @@ func (g *Galleries) galleryByID(w http.ResponseWriter, r *http.Request) (*models
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
+		log.Println(err)
 		http.Error(w, "Invalid gallery ID", http.StatusFound)
 		return nil, err
 	}
@@ -33,6 +35,7 @@ func (g *Galleries) galleryByID(w http.ResponseWriter, r *http.Request) (*models
 		case models.ErrNotFound:
 			http.Error(w, "Gallery not found", http.StatusNotFound)
 		default:
+			log.Println(err)
 			http.Error(w, "Whoops! Something went wrong.", http.StatusInternalServerError)
 		}
 		return nil, err
