@@ -2,6 +2,7 @@ package views
 
 import (
 	"bytes"
+	"errors"
 	"github.com/gitalek/gogal/context"
 	"html/template"
 	"io"
@@ -23,7 +24,11 @@ func NewView(layout string, files ...string) (*View, error) {
 		return nil, err
 	}
 	files = append(files, layoutFiles...)
-	t, err := template.ParseFiles(files...)
+	t, err := template.New("").Funcs(template.FuncMap{
+		"csrfField": func() (template.HTML, error) {
+			return "", errors.New("csrfField is not implemented")
+		},
+	}).ParseFiles(files...)
 	if err != nil {
 		return nil, err
 	}
