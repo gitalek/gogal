@@ -5,6 +5,8 @@ import (
 	"github.com/gitalek/gogal/controllers"
 	"github.com/gitalek/gogal/middleware"
 	"github.com/gitalek/gogal/models"
+	"github.com/gitalek/gogal/rand"
+	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -103,5 +105,10 @@ func main() {
 	assetHandler = http.StripPrefix("/assets/", assetHandler)
 	r.PathPrefix("/assets/").Handler(assetHandler)
 
-	log.Fatal(http.ListenAndServe(":3000", userMw.Apply(r)))
+	csrfKey, err := rand.Bytes(32)
+	if err != nil {
+		panic(err)
+	}
+	csrfMw := csrf.Protect(csrfKey)
+	log.Fatal(http.ListenAndServe(":3000", csrfMw(userMw.Apply(r))))
 }
