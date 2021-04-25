@@ -246,15 +246,16 @@ func (g *Galleries) ImageUpload(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	vd.Alert = &views.Alert{
-		Level:   views.AlertLvlSuccess,
-		Message: "Images successfully uploaded!",
+	url, err := g.r.Get(EditGallery).URL("id", fmt.Sprintf("%v", gallery.ID))
+	if err != nil {
+		http.Redirect(w, r, "/galleries", http.StatusFound)
+		return
 	}
-	g.EditView.Render(w, r, vd)
+	http.Redirect(w, r, url.Path, http.StatusFound)
 }
 
 // POST /galleries/:id/images/:filename/delete
-func (g *Galleries) ImageDelete(w http.ResponseWriter, r *http.Request)  {
+func (g *Galleries) ImageDelete(w http.ResponseWriter, r *http.Request) {
 	gallery, err := g.galleryByID(w, r)
 	if err != nil {
 		return
@@ -269,7 +270,7 @@ func (g *Galleries) ImageDelete(w http.ResponseWriter, r *http.Request)  {
 	filename := mux.Vars(r)["filename"]
 	// Build the Image model
 	i := models.Image{
-		Filename: filename,
+		Filename:  filename,
 		GalleryID: gallery.ID,
 	}
 	// Try to delete the image.
