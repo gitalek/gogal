@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"github.com/gitalek/gogal/context"
+	"github.com/gorilla/csrf"
 	"html/template"
 	"io"
 	"net/http"
@@ -53,7 +54,15 @@ func (v *View) Render(w http.ResponseWriter, r *http.Request, data interface{}) 
 	}
 	vd.User = context.User(r.Context())
 	var buf bytes.Buffer
-	err := v.Template.ExecuteTemplate(&buf, v.Layout, vd)
+
+	csrfField := csrf.TemplateField(r)
+	tpl := v.Template.Funcs(template.FuncMap{
+		"csrfField": func() template.HTML {
+			return csrfField
+		},
+	})
+
+	err := tpl.ExecuteTemplate(&buf, v.Layout, vd)
 	if err != nil {
 		http.Error(
 			w,
