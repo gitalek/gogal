@@ -4,19 +4,20 @@ import (
 	"github.com/gitalek/gogal/context"
 	"github.com/gitalek/gogal/models"
 	"net/http"
+	"strings"
 )
 
-type RequireUser struct {}
+type RequireUser struct{}
 
 func (mw *RequireUser) ApplyFn(next http.HandlerFunc) http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-    	user := context.User(r.Context())
-    	if user == nil {
-    		http.Redirect(w, r, "/login", http.StatusFound)
-    		return
+	return func(w http.ResponseWriter, r *http.Request) {
+		user := context.User(r.Context())
+		if user == nil {
+			http.Redirect(w, r, "/login", http.StatusFound)
+			return
 		}
-        next(w, r)
-    }
+		next(w, r)
+	}
 }
 
 func (mw *RequireUser) Apply(next http.Handler) http.HandlerFunc {
@@ -29,6 +30,12 @@ type User struct {
 
 func (mw *User) ApplyFn(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		path := r.URL.Path
+		if strings.HasPrefix(path, "/assets/") || strings.HasPrefix(path, "/images/") {
+			next(w, r)
+			return
+		}
+
 		cookie, err := r.Cookie("remember_token")
 		if err != nil {
 			next(w, r)
