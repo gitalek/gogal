@@ -38,3 +38,19 @@ func DefaultPostgresConfig() PostgresConfig {
 		Name:     "gogal_dev",
 	}
 }
+
+type Config struct {
+	Port int
+	Env  string
+}
+
+func (c Config) IsProd() bool {
+	return c.Env == "prod"
+}
+
+func DefaultConfig() Config {
+	return Config{
+		Port: 3000,
+		Env:  "dev",
+	}
+}
