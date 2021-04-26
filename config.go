@@ -28,3 +28,13 @@ func (c PostgresConfig) ConnectionInfo() string {
 		c.Host, c.Port, c.User, c.Password, c.Name,
 	)
 }
+
+func DefaultPostgresConfig() PostgresConfig {
+	return PostgresConfig{
+		Host:     "localhost",
+		Port:     5432,
+		User:     "jon",
+		Password: "your-password",
+		Name:     "gogal_dev",
+	}
+}
