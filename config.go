@@ -19,12 +19,12 @@ func (c PostgresConfig) ConnectionInfo() string {
 	// based on whether a password is present.
 	if c.Password == "" {
 		return fmt.Sprintf(
-			"host=%s port=%d user=%s dbname=%s sslmode=dilable",
+			"host=%s port=%d user=%s dbname=%s sslmode=disable",
 			c.Host, c.Port, c.User, c.Name,
 		)
 	}
 	return fmt.Sprintf(
-		"host=%s port=%d user=%s password=%s dbname=%s sslmode=dilable",
+		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		c.Host, c.Port, c.User, c.Password, c.Name,
 	)
 }
@@ -32,9 +32,9 @@ func (c PostgresConfig) ConnectionInfo() string {
 func DefaultPostgresConfig() PostgresConfig {
 	return PostgresConfig{
 		Host:     "localhost",
-		Port:     5432,
-		User:     "jon",
-		Password: "your-password",
+		Port:     54321,
+		User:     "gogal",
+		Password: "lalala",
 		Name:     "gogal_dev",
 	}
 }

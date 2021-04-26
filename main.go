@@ -12,14 +12,6 @@ import (
 	"net/http"
 )
 
-const (
-	host     = "localhost"
-	port     = 54321
-	user     = "gogal"
-	password = "lalala"
-	dbname   = "gogal_dev"
-)
-
 func err404(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
 	fmt.Fprint(w, "<h1>We could not find the page you "+
@@ -36,11 +28,9 @@ func must(err error) {
 }
 
 func main() {
-	connStr := fmt.Sprintf(
-		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname,
-	)
-	services, err := models.NewServices(connStr)
+	cfg := DefaultConfig()
+	dbCfg := DefaultPostgresConfig()
+	services, err := models.NewServices(dbCfg.Dialect(), dbCfg.ConnectionInfo())
 	if err != nil {
 		panic(err)
 	}
@@ -105,12 +95,11 @@ func main() {
 	assetHandler = http.StripPrefix("/assets/", assetHandler)
 	r.PathPrefix("/assets/").Handler(assetHandler)
 
-	// TODO: Update this to be a config variable
-	isProd := false
 	csrfKey, err := rand.Bytes(32)
 	if err != nil {
 		panic(err)
 	}
-	csrfMw := csrf.Protect(csrfKey, csrf.Secure(isProd))
-	log.Fatal(http.ListenAndServe(":3000", csrfMw(userMw.Apply(r))))
+	csrfMw := csrf.Protect(csrfKey, csrf.Secure(cfg.IsProd()))
+	fmt.Printf("Starting the server on :%d...\n", cfg.Port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), csrfMw(userMw.Apply(r))))
 }
