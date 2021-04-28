@@ -39,6 +39,27 @@ func WithLogMode(mode bool) ServicesConfig {
 	}
 }
 
+func WithUser(pepper, hmacKey string) ServicesConfig {
+	return func(s *Services) error {
+		s.User = NewUserService(s.db, pepper, hmacKey)
+		return nil
+	}
+}
+
+func WithGallery() ServicesConfig {
+	return func(s *Services) error {
+		s.Gallery = NewGalleryService(s.db)
+		return nil
+	}
+}
+
+func WithImage() ServicesConfig {
+	return func(s *Services) error {
+		s.Image = NewImageService()
+		return nil
+	}
+}
+
 //func NewServices(dialect, connStr string) (*Services, error) {
 //	db, err := gorm.Open(dialect, connStr)
 //	if err != nil {

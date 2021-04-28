@@ -8,17 +8,19 @@ import (
 
 type userService struct {
 	UserDB
+	pepper string
 }
 
-func NewUserService(db *gorm.DB) UserService {
+func NewUserService(db *gorm.DB, pepper, hmacKey string) UserService {
 	ug := &userGorm{db: db}
-	hmac := hash.NewHMAC(hmacSecretKey)
-	uv, err := newUserValidator(ug, hmac)
+	hmac := hash.NewHMAC(hmacKey)
+	uv, err := newUserValidator(ug, hmac, pepper)
 	if err != nil {
 		return nil
 	}
 	return &userService{
 		UserDB: uv,
+		pepper: pepper,
 	}
 }
 
@@ -29,7 +31,7 @@ func (us *userService) Authenticate(email, password string) (*User, error) {
 	}
 	err = bcrypt.CompareHashAndPassword(
 		[]byte(foundUser.PasswordHash),
-		[]byte(password+userPwPepper),
+		[]byte(password+us.pepper),
 	)
 	// Three use cases:
 	switch err {

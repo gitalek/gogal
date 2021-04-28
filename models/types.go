@@ -30,10 +30,6 @@ var (
 	ErrRememberRequired modelError = "models: remember token is required"
 	// ErrRememberTooShort is returned when a remember token is not at least 32 bytes.
 	ErrRememberTooShort modelError = "models: remember token must be at least 32 bytes"
-	// userPwPepper is used for peppering passwords.
-	userPwPepper = "secret-random-string"
-	// hmacSecretKey is used for hashing remember tokens.
-	hmacSecretKey = "secret-hmac-key"
 )
 
 // UserDB is used to interact with the users database.
